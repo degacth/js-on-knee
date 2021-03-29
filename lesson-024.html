@@ -1,0 +1,23 @@
+<input id=indexControl type=number>
+<button id=moveButton> &lt; </button>
+<input id=contentControl>
+
+<div id=resultBlock></div>
+
+<script>
+    array = []
+
+    for (i = 0; i < 10; i = i + 1) {
+        array[i] = 0
+    }
+
+    function move() {
+        position = indexControl.value
+        array[position] = contentControl.value
+        contentControl.value = ''
+        resultBlock.textContent = array
+    }
+
+    moveButton.onclick = move
+    resultBlock.textContent = array
+</script>

@@ -1,0 +1,18 @@
+<body></body>
+<script>
+    i = 1
+    while (i < window.innerWidth) {
+        i = i + i
+        image = new Image
+        image.src = 'js.png'
+        image.style.position = 'fixed'
+        image.style.top = '100px'
+        image.style.left = i
+        image.style.border = '2px solid black'
+        image.style.transform = 'rotate(' + i + 'deg)'
+        image.width = i
+        image.height = i
+
+        document.body.appendChild(image)
+    }
+</script>

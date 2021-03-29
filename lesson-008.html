@@ -1,0 +1,13 @@
+<img id=picture src=js.png>
+<script>
+    diff = 4
+    function resize() {
+        w = picture.width * diff
+        h = picture.height * diff
+
+        picture.width = w
+        picture.height = h
+    }
+
+    picture.onclick = resize
+</script>

@@ -1,0 +1,25 @@
+<input type=radio name=color id=red> Красный <br>
+<input type=radio name=color id=green> Зелёный <br>
+<input type=radio name=color id=blue> Синий <br>
+
+<script>
+    function selectColor() {
+        if (red.checked) {
+            document.bgColor = 'red'
+            document.fgColor = 'white'
+        }
+        else if (green.checked) {
+            document.bgColor = 'green'
+            document.fgColor = 'white'
+        }
+        else if (blue.checked) {
+            document.bgColor = 'blue'
+            document.fgColor = 'white'
+        }
+        else {
+            alert('Вы не выбрали цвет')
+        }
+    }
+
+    document.onclick = selectColor
+</script>

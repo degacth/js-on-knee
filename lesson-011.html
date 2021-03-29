@@ -1,0 +1,13 @@
+<script>
+    function createImage(event) {
+        image = new Image
+        image.src = 'js.png'
+        image.style.position = 'fixed'
+        image.style.left = event.clientX + 'px'
+        image.style.top = event.clientY + 'px'
+
+        document.body.appendChild(image)
+    }
+
+    document.onclick = createImage
+</script>

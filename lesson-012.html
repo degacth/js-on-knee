@@ -1,0 +1,13 @@
+<button id=closeTab>x</button>
+
+<script>
+    function closeWindow() {
+        answer = confirm('Вы уверены что хотите выйти?')
+        if (answer) {
+            window.close()
+        }
+    }
+
+    closeTab.onclick = closeWindow
+
+</script>

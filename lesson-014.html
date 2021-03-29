@@ -1,0 +1,16 @@
+Логин: <input id="login"><br>
+Пароль: <input id="password" type="password"><br>
+<button id="enter">Вход</button>
+
+<script>
+    function auth() {
+        if (login.value == 'alex' && password.value == 'abcde') {
+            alert('Вход выполнен')
+        }
+        else {
+            alert('Вы неверно ввели логин / пароль')
+        }
+    }
+
+    enter.onclick = auth
+</script>

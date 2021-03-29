@@ -1,0 +1,13 @@
+<script>
+    index = 0
+    command = prompt('Введите название товара или exit для выхода')
+
+    while (command != 'exit') {
+        document.write(index + ': ' + command + '<br>')
+        command = prompt('Введите ещё отвар')
+        index = index + 1
+    }
+
+    document.write('---------------------------------- <br>')
+    document.write('Вы ввели ' + index + ' товаров')
+</script>

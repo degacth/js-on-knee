@@ -1,0 +1,14 @@
+<input id=x type=range min=100 max=1000>
+<input id=y type=range min=100 max=800>
+<img src=js.png id=picture>
+
+<script>
+    function updatePosition() {
+        picture.style.position = 'fixed'
+        picture.style.top = y.value + 'px'
+        picture.style.left = x.value + 'px'
+    }
+
+    x.oninput = updatePosition
+    y.oninput = updatePosition
+</script>

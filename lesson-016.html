@@ -1,0 +1,18 @@
+<script>
+    year = +prompt('Введите год')
+
+    if (year % 4 != 0) {
+        alert('Обычный')
+    }
+    else if (year % 100 == 0) {
+        if (year % 400 == 0) {
+            alert('Високосный')
+        }
+        else {
+            alert('Обычный')
+        }
+    }
+    else {
+        alert('Високосный')
+    }
+</script>

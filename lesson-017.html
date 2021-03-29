@@ -1,0 +1,57 @@
+Попал: <input id=killedControl readonly>
+Мимо: <input id=missedControl readonly>
+
+<script>
+    showTime = 1000
+
+    function showImage() {
+        image = new Image
+        image.src = 'js.png'
+        image.style.position = 'fixed'
+        image.style.cursor = 'crosshair'
+
+        width = window.innerWidth
+        height = window.innerHeight
+        image.style.left = Math.random() * width
+        image.style.top = Math.random() * height
+
+        document.body.appendChild(image)
+
+        function nextRound() {
+            document.body.removeChild(image)
+            setTimeout(showImage, showTime)
+        }
+
+        setTimeout(nextRound, showTime)
+    }
+
+    setTimeout(showImage, showTime)
+
+    killed = 0
+    missed = 0
+    maxRound = 3
+
+    function playerClick(event) {
+        if (event.target instanceof Image) {
+            killed = killed + 1
+            killedControl.value = killed
+        }
+        else {
+            missed = missed + 1
+            missedControl.value = missed
+        }
+
+        if (killed == maxRound || missed == maxRound) {
+            document.onclick = null
+
+            if (killed > missed) {
+                alert('Вы победили')
+            }
+            else {
+                alert('Вы проиграли')
+            }
+        }
+    }
+
+    document.onclick = playerClick
+</script>

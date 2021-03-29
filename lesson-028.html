@@ -1,0 +1,11 @@
+<script>
+    newTitle = prompt('Введите заголовок')
+
+    for (let i = 0; i < newTitle.length; i = i + 1) {
+        function updateTitle() {
+            document.title = document.title + newTitle[i]
+        }
+
+        setTimeout(updateTitle, i * 300)
+    }
+</script>

@@ -1,0 +1,38 @@
+<body></body>
+
+<script>
+    let word = prompt('Введите текст')
+    let maxWidth = window.innerWidth - 100
+    let maxHeight = window.innerHeight - 100
+    let startPosition = 0
+
+    for (let i = 0; i < word.length; i++) {
+        let letter = word[i]
+        let button = document.createElement('button')
+        button.textContent = letter
+
+        button.style.position = 'fixed'
+        button.style.left = Math.random() * maxWidth
+        button.style.top = Math.random() * maxHeight
+
+        function onButtonClick() {
+            if (startPosition == i) {
+                startPosition++
+                button.style.position = 'static'
+
+                if (startPosition == word.length) {
+                    alert('Победа')
+                    button.onclick = null
+                }
+                else {
+                }
+            }
+            else {
+                alert('Не верно')
+            }
+        }
+
+        button.onclick = onButtonClick
+        document.body.appendChild(button)
+    }
+</script>

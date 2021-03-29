@@ -1,0 +1,29 @@
+Вы хотите получать 200 000 руб в месяц?<br>
+<button>Нет</button>
+<button id=yesButton>Да</button>
+
+<script>
+    buttonPositions = [
+        [100, 100],
+        [300, 100],
+        [300, 300],
+        [100, 300]
+    ]
+
+    currentIndex = 0
+
+    function updateButtonPositions() {
+        currentIndex = currentIndex + 1
+
+        if (currentIndex >= 4) {
+            currentIndex = 0
+        }
+
+        yesButton.style.position = 'fixed'
+        positions = buttonPositions[currentIndex]
+        yesButton.style.left = positions[0]
+        yesButton.style.top = positions[1]
+    }
+
+    yesButton.onmouseenter = updateButtonPositions
+</script>

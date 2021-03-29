@@ -1,0 +1,27 @@
+<body></body>
+
+<script>
+    array = [100, 10, 650, 300, 50]
+
+    for (i = 0; i < 5; i = i + 1) {
+        let image = new Image
+        image.src = 'js.png'
+        image.style.position = 'fixed'
+        value = array[i]
+        image.style.top = 150 * i + 100
+        image.style.left = value
+        image.style.transform = 'rotate('+ value +'deg)'
+        image.style.transition = 'all 2s'
+        image.width = value
+        image.height = value
+
+        document.body.appendChild(image)
+
+        function move() {
+            image.style.top = 0
+            image.style.transform = 'rotate(0deg)'
+        }
+
+        setTimeout(move, value)
+    }
+</script>
