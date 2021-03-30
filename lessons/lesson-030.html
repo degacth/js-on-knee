@@ -1,0 +1,34 @@
+<input type=number id=x>
+
+<button id=plus>+</button>
+<button id=minus>-</button>
+<button>*</button>
+<button>/</button>
+
+<input type=number id=y>
+
+= <input disabled id=result>
+
+<script>
+    function add(a, b) {
+        return a + b
+    }
+
+    function buttonPlusClick() {
+        let addResult = add(+x.value, +y.value)
+        result.value = addResult
+    }
+
+    plus.onclick = buttonPlusClick
+
+    function sub(a, b) {
+        return a - b
+    }
+
+    function buttonMinusClick() {
+        let subResult = sub(x.value, y.value)
+        result.value = subResult
+    }
+
+    minus.onclick = buttonMinusClick
+</script>
