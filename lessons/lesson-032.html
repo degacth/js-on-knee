@@ -1,0 +1,20 @@
+<script>
+    function repeat(char, times) {
+        let result = ''
+        for (let n = 0; n < times; n++) {
+            result = result + char
+        }
+
+        return result
+    }
+
+    function makeLineString(size) {
+        let line = repeat('-', size)
+        return line
+    }
+
+    for (let i = 1; i <= 10; i++) {
+        let str = makeLineString(i)
+        document.write(str + '<br>')
+    }
+</script>

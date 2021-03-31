@@ -1,0 +1,11 @@
+<input id=coords disabled>
+<script>
+    function mouseMoved(popa) {
+        coords.style.position = 'fixed'
+        coords.style.left = popa.x + 'px'
+        coords.style.top = popa.y + 'px'
+        coords.value = popa.x + ' x ' + popa.y
+    }
+
+    document.onmousemove = mouseMoved
+</script>
