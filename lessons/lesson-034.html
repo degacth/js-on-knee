@@ -1,0 +1,22 @@
+<button id=makeStrong><strong>Жирный</strong></button>
+<button id=makeItalic><i>Курсив</i></button>
+
+<div id=lorem>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Pariatur</div>
+
+<script>
+    function wrapTextWithTag(tag, text) {
+        return '<' + tag + '>' + text + '</' + tag + '>'
+    }
+
+    function getStrong(text) {
+        return wrapTextWithTag('strong', text)
+    }
+
+    function makeSelectionStrong() {
+        let selectedText = getSelection().toString()
+        let strongText = getStrong(selectedText)
+        lorem.innerHTML = lorem.textContent.replace(selectedText, strongText)
+    }
+
+    makeStrong.onclick = makeSelectionStrong
+</script>
