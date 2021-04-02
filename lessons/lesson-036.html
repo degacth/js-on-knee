@@ -1,0 +1,84 @@
+<input type=number id=sum><br>
+Доставка: <input type=checkbox id=shipment>
+<select hidden id=shipmentSelector>
+    <option>Почта</option>
+    <option>СДЭК</option>
+</select>
+<br>
+Оплата: <br>
+<input type=radio name=payment id=cash> Наличные<br>
+<input type=radio name=payment id=card> Картой <input hidden placeholder="0000 0000 0000 0000" id=cardNumber><br>
+Ваша скидка: <input disabled id=discount>
+
+<script>
+    function isDiscountApplieble(order) {
+        return order > 1000 || shipment.checked || card.checked
+    }
+
+    function getDiscount() {
+        let orderSum = +sum.value
+        if (isDiscountApplieble(orderSum)) {
+            return orderSum * 0.1
+        }
+        else {
+            return 0
+        }
+    }
+
+    function onSumChanged() {
+        discount.value = getDiscount()
+    }
+
+    function onShipmentChanged() {
+        if (shipment.checked) {
+            shipmentSelector.hidden = false
+        }
+        else {
+            shipmentSelector.hidden = true
+        }
+        
+        discount.value = getDiscount()
+    }
+
+    function onCashChanged() {
+        if (card.checked) {
+            cardNumber.hidden = false
+        }
+        else {
+            cardNumber.hidden = true
+        }
+        let orderSum = +sum.value
+        if (orderSum > 1000 || shipment.checked || card.checked) {
+            discount.value = orderSum * 0.1
+        }
+        else {
+            discount.value = 0
+        }
+    }
+
+    function onCardChanged() {
+        if (card.checked) {
+            cardNumber.hidden = false
+        }
+        else {
+            cardNumber.hidden = true
+        }
+        let orderSum = +sum.value
+        if (orderSum > 1000 || shipment.checked || card.checked) {
+            discount.value = orderSum * 0.1
+        }
+        else {
+            discount.value = 0
+        }
+    }
+
+    sum.oninput = onSumChanged
+    shipment.onchange = onShipmentChanged
+    card.onchange = onCardChanged
+    cash.onchange = onCashChanged
+
+    onSumChanged()
+    onShipmentChanged()
+    onCardChanged()
+    onCashChanged()
+</script>
