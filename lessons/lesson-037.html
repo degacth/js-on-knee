@@ -1,0 +1,27 @@
+<input id=newTask> <button id=addButton>+</button>
+<ul id=list></ul>
+
+<script>
+    function createListItem(text) {
+        return '<li contenteditable>' + text + '</li>'
+    }
+
+    function addTask() {
+        let item = createListItem(newTask.value)
+        list.innerHTML = list.innerHTML + item
+        newTask.value = ''
+    }
+
+    function removeItem(event) {
+        if (event.target instanceof HTMLLIElement) {
+            let confirmed = confirm('Вы точно хотите удалить?')
+
+            if (confirmed) {
+                list.removeChild(event.target)
+            }
+        }
+    }
+
+    addButton.onclick = addTask
+    document.ondblclick = removeItem
+</script>
