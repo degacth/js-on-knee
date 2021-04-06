@@ -1,0 +1,26 @@
+<canvas id=canvas width=800 height=600></canvas>
+
+<script>
+    let width = canvas.width
+    let height = canvas.height
+    let ctx = canvas.getContext('2d')
+    ctx.fillStyle = 'black'
+    ctx.fillRect(0, 0, width, height)
+
+    let stars = []
+    let colors = ['white', 'blue', 'magenta']
+    for (let i = 0; i < 100; i++) {
+        stars[i] = {
+            x: Math.random() * width,
+            y: Math.random() * height,
+            size: Math.random() * 3 + 1,
+            color: colors[ parseInt(Math.random() * colors.length) ]
+        }
+    }
+
+    for (let i = 0; i < stars.length; i++) {
+        let star = stars[i]
+        ctx.fillStyle = 'white'
+        ctx.fillRect(star.x, star.y, star.size, star.size)
+    }
+</script>
