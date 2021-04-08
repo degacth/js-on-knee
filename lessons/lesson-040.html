@@ -1,0 +1,44 @@
+<select id=personSelector>
+    <option>0</option>
+    <option>1</option>
+    <option>2</option>
+</select>
+
+<dl>
+    <dt>Имя:</dt>
+    <dd id=pName></dd>
+
+    <dt>Возраст:</dt>
+    <dd id=pAge></dd>
+
+    <dt>Вес:</dt>
+    <dd id=pWeight></dd>
+</dl>
+
+<script>
+    class Person {
+        constructor(name, age, weight, footSize) {
+            this.name = name
+            this.age = age
+            this.weight = weight
+            this.footSize = footSize
+        }
+    }
+
+    let john = new Person('John Bar', 24, 68, 44)
+    let kate = new Person('Kate Foo', 62, 74, 39)
+    let alex = new Person('Alex Monad', 37, 90, 46)
+    let persons = [john, kate, alex]
+
+    function onPersonNumberChanged() {
+        let personIndex = personSelector.value
+        let person = persons[personIndex]
+
+        pAge.textContent = person.age
+        pName.textContent = person.name
+        pWeight.textContent = person.weight
+    }
+
+    personSelector.onchange = onPersonNumberChanged
+    onPersonNumberChanged()
+</script>
