@@ -1,0 +1,42 @@
+<canvas id=canvas width=320 height=240></canvas>
+
+<script>
+    let ctx = canvas.getContext('2d')
+
+    function drawLines(lines) {
+        ctx.beginPath()
+
+        for (let i = 0; i < lines.length; i++) {
+            let line = lines[i]
+            ctx.moveTo(line.start.x, line.start.y)
+            ctx.lineTo(line.finish.x, line.finish.y)
+            ctx.stroke()
+        }
+    }
+
+    let xLines = [
+        {
+            start: {
+                x: 20,
+                y: 20,
+            },
+            finish: {
+                x: 120,
+                y: 120,
+            }
+        },
+        {
+            start: {
+                x: 120,
+                y: 20,
+            },
+            finish: {
+                x: 20,
+                y: 120,
+            }
+        }
+    ]
+
+    drawLines(xLines)
+
+</script>
