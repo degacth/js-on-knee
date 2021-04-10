@@ -1,0 +1,54 @@
+<body>
+    <h1 id=galleryTitle></h1>
+</body>
+
+<script>
+    class GalleryItem {
+        constructor(title, src) {
+            this.title = title
+            let image = new Image
+            image.src = src
+            image.style.position = 'fixed'
+            image.style.transition = 'all ease 0.6s'
+            image.style.opacity = 0
+            this.image = image
+        }
+
+        hideImage() {
+            this.image.style.opacity = 0
+        }
+
+        showImage() {
+            this.image.style.opacity = 1
+        }
+    }
+
+    let items = [
+        new GalleryItem('Красивая картинка', 'https://loremflickr.com/320/240?random=1'),
+        new GalleryItem('Отличная картинка', 'https://loremflickr.com/320/240?random=2'),
+        new GalleryItem('Великолепная картинка', 'https://loremflickr.com/320/240?random=3'),
+    ]
+
+    for (let i = 0; i < items.length; i++) {
+        let item = items[i]
+        document.body.appendChild(item.image)
+    }
+
+    let currentImageIndex = 0
+    function updateImage() {
+        let item = items[currentImageIndex]
+        item.hideImage()
+
+        currentImageIndex++
+        if (currentImageIndex >= items.length) {
+            currentImageIndex = 0
+        }
+
+        let nextImage = items[currentImageIndex]
+        galleryTitle.textContent = nextImage.title
+        nextImage.showImage()
+    }
+
+    updateImage()
+    setInterval(updateImage, 2000)
+</script>
