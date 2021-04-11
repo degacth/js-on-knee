@@ -1,0 +1,57 @@
+<body>
+    <canvas id=canvas width=800 height=600></canvas>
+    <input type=color id=colorPicker>
+</body>
+
+<script>
+    document.body.style.margin = 0
+    document.body.style.padding = 0
+
+    let width = canvas.width
+    let height = canvas.height
+    let ctx = canvas.getContext('2d')
+
+    function fillBackground() {
+        ctx.fillStyle = 'black'
+        ctx.fillRect(0, 0, width, height)
+    }
+
+    let rect = null
+
+    function createRect(event) {
+        rect = {
+            color: colorPicker.value,
+            start: {
+                x: event.x,
+                y: event.y,
+            },
+            size: {
+                width: 0,
+                height: 0,
+            }
+        }
+    }
+
+    function renderRect(event) {
+        if (rect == null) {
+            return
+        }
+
+        fillBackground()
+        rect.size.width = event.x - rect.start.x
+        rect.size.height = event.y - rect.start.y
+
+        ctx.fillStyle = rect.color
+        ctx.fillRect(rect.start.x, rect.start.y, rect.size.width, rect.size.height)
+    }
+
+    function removeRect() {
+        rect = null
+    }
+
+    fillBackground()
+
+    canvas.onmousedown = createRect
+    canvas.onmouseup = removeRect
+    canvas.onmousemove = renderRect
+</script>
