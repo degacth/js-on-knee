@@ -1,0 +1,58 @@
+<button id=play autofocus>play</button>
+<script>
+    class Note {
+        constructor(freq, len) {
+            this.freq = freq
+            this.len = len
+        }
+
+        createNoteWithLen(len) {
+            return new Note(this.freq, len)
+        }
+    }
+
+    let basicLen = 500
+    let mi = new Note(330, basicLen)
+    let sol = new Note(392, basicLen)
+    let la = new Note(440, basicLen * 1.5)
+    let sib = new Note(466, basicLen / 2)
+    let stopNote = new Note(0, 0)
+
+    let ctx = new AudioContext()
+    let osci = ctx.createOscillator()
+    osci.connect(ctx.destination)
+
+    let smokeOnTheWater = [
+        mi, sol, la,
+        mi, sol, sib, la.createNoteWithLen(basicLen * 2),
+        mi, sol, la,
+        stopNote,
+    ]
+
+    function playNotes(notes) {
+        let currentTime = 0
+        for (let i = 0; i < notes.length; i++) {
+            let note = notes[i]
+
+            function run() {
+                if (note.freq == 0) {
+                    play.disabled = false
+                    ctx.suspend()
+                    return
+                }
+
+                osci.frequency.setTargetAtTime(note.freq, ctx.currentTime, 0.0)
+            }
+            setTimeout(run, currentTime)
+            currentTime = currentTime + note.len
+        }
+        osci.start(0)
+    }
+
+    function playSong() {
+        play.disabled = true
+        playNotes(smokeOnTheWater)
+    }
+
+    play.onclick = playSong
+</script>
