@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resizer</title>
+    <script src="vue.js"></script>
+</head>
+
+<body>
+    <div id="resizer">
+        <input type="number" v-model="width">
+        <input type="number" v-model="height">
+        <input type="checkbox" v-model="hidden">
+        <br>
+        <img src="js.png" :width="width" :height="height">
+    </div>
+
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    width: 300,
+                    height: 300,
+                }
+            }
+        }).mount('#resizer')
+    </script>
+</body>
+
+</html>
