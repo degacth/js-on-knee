@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Страница входа</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+    <div id="login">
+        {{ errorMessage }}<br>
+        <div v-if="loggedIn">
+            Вы успешно вошли как {{ login }}
+        </div>
+        <div v-else>
+            Логин: <input v-model="login"> <br>
+            Пароль: <input type="password" v-model="password"> <br>
+            <button @click="checkLogin">Вход</button>
+        </div>
+    </div>
+
+    <script>
+        Vue.createApp({
+            data() {
+                return {
+                    login: '',
+                    password: '',
+                    loggedIn: false,
+                }
+            },
+            methods: {
+                checkLogin() {
+                    if (this.login == 'user' && this.password == '12345') {
+                        this.loggedIn = true
+                    }
+                }
+            }
+        }).mount('#login')
+    </script>
+</body>
+</html>
