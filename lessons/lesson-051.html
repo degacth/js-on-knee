@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бесполезные и дешёвые</title>
+    <script src="vue.js"></script>
+</head>
+
+<body>
+    <div id="products-list">
+        Список продуктов:
+        <ul>
+            <li v-for="product in products">
+                {{product.name}} {{Math.round(product.price * product.quantity)}} RUR <br>
+                <label><input type="checkbox" v-model="product.useless"> Бесполезный </label><br>
+            </li>
+        </ul>
+
+        Бесполезные продукты:
+        <ul>
+            <template v-for="product in products">
+                <li v-if="product.useless">
+                    {{product.name}}
+                </li>
+            </template>
+        </ul>
+    </div>
+    <script>
+        class Product {
+            useless = false
+            cheap = false
+
+            constructor(name, price, quantity) {
+                this.name = name
+                this.price = price
+                this.quantity = quantity
+            }
+        }
+
+        const productsApp = {
+            data() {
+                const products = [
+                    new Product('Яблоки', 120, 1.5),
+                    new Product('Хлеб', 12, 3),
+                    new Product('Морковь', 17, 2.8),
+                    new Product('Чипсы', 78, 3),
+                    new Product('Сигареты', 168, 20),
+                ]
+
+                return {
+                    products: products,
+                }
+            }
+        }
+        Vue.createApp(productsApp).mount('#products-list')
+    </script>
+</body>
+
+</html>
