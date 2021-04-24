@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Часы</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <clock :background="bg"></clock>
+        <br>
+        <input type="color" v-model="bg">
+    </div>
+
+    <script>
+        const clock = {
+            template: '<div :style="getStyles()">{{showTime()}}</div>',
+            props: ['background',],
+            data() {
+                return {
+                    currentDate: new Date()
+                }
+            },
+            methods: {
+                showTime() {
+                    return this.currentDate.toLocaleString('default', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                    })
+                },
+                updateTime() {
+                    this.currentDate = new Date()
+                },
+                getStyles() {
+                    return {
+                        textAlign: 'center',
+                        lineHeight: '80px',
+                        width: '80px',
+                        borderRadius: '50%',
+                        background: this.background || 'tomato',
+                        color: 'white',
+                    }
+                }
+            },
+            created() {
+                setInterval(this.updateTime, 1000)
+            }
+        }
+        const app = {
+            components: {
+                clock,
+            },
+            data() {
+                return {
+                    bg: null,
+                }
+            }
+        }
+        Vue.createApp(app).mount('#app')
+    </script>
+</body>
+</html>
