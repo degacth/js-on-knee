@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Я тебя нашёл</title>
+    <script src="vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <maniac-letter></maniac-letter>
+    </div>
+
+    <script>
+        const maniacLetter = {
+            template: '<span :style="getRandomStyle()" v-for="char in letter">{{char}}</span>',
+            data() {
+                return {
+                    letter: 'hello world'
+                }
+            },
+            methods: {
+                getRandomStyle() {
+                    const fontFamily = ['serif', 'sans-serif', 'cursive']
+                    const charColors = ['white', 'black']
+                    const backgrounds = ['tomato', 'steelBlue', 'skyBlue', 'mediumSeaGreen', 'gold']
+                    const textTransforms = ['uppercase', 'lowercase']
+
+                    return {
+                        display: 'inline-block',
+                        boxShadow: '0 0 5px rgba(0, 0, 0, .9)',
+                        fontSize: this.getRandomInt(20, 44) + 'px',
+                        fontFamily: fontFamily[this.getRandomInt(0, fontFamily.length)],
+                        color: charColors[this.getRandomInt(0, charColors.length)],
+                        background: backgrounds[this.getRandomInt(0, backgrounds.length)],
+                        padding: this.getRandomInt(0, 12) + 'px',
+                        margin: this.getRandomInt(0, 3) + 'px',
+                        transform: 'rotate('+this.getRandomInt(-10, 10)+'deg)',
+                        textTransform: textTransforms[this.getRandomInt(0, textTransforms.length)],
+                    }
+                },
+                getRandomInt(from, to) {
+                    return parseInt(Math.random() * (to - from)) + from
+                }
+            }
+        }
+        const app = {
+            components: {
+                maniacLetter,
+            }
+        }
+        Vue.createApp(app).mount('#app')
+    </script>
+</body>
+</html>
