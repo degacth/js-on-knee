@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сколько слов в тексте?</title>
+    <script src="vue.js"></script>
+    <link rel="stylesheet" href="uikit.min.css">
+</head>
+
+<body>
+    <div id="app" class="uk-container">
+        <textarea v-model="text" rows="10" class="uk-textarea"></textarea><br>
+        <word-counter :text="text" :limit="7"></word-counter>
+    </div>
+
+    <template id="wordCounterTpl">
+        <span class="uk-text-meta" :class="getClass()">
+            Текст содержит <span class="uk-badge">{{countWords()}}</span> слов(а)
+        </span>
+    </template>
+
+    <script>
+        const wordCounter = {
+            template: wordCounterTpl.innerHTML,
+            props: ['text', 'limit'],
+            methods: {
+                countWords() {
+                    const cleanText = this.text.trim()
+                    if (cleanText == '') {
+                        return 0
+                    }
+
+                    return cleanText.split(' ').length
+                },
+
+                getClass() {
+                    const countWords = this.countWords()
+                    const isLimitExceed = this.limit < countWords
+                    return {
+                        'uk-text-primary': !isLimitExceed,
+                        'uk-text-danger': isLimitExceed,
+                    }
+                }
+            },
+        }
+        const app = {
+            data() {
+                return {
+                    text: 'lorem ip sum dolor amet'
+                }
+            },
+            components: {
+                wordCounter,
+            }
+        }
+        Vue.createApp(app).mount('#app')
+    </script>
+</body>
+
+</html>
