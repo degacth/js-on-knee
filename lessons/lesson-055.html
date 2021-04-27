@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Галерея котов</title>
+    <link rel="stylesheet" href="uikit.min.css">
+    <script src="uikit.min.js"></script>
+    <script src="vue.js"></script>
+</head>
+<body>
+    <div id="app" class="uk-container uk-container-small uk-margin-top">
+        Размер сетки:<br>
+        <select v-model="gridWidth" class="uk-select uk-width-1-2">
+            <option>4</option>
+            <option>5</option>
+            <option>6</option>
+        </select>
+
+        <select v-model="gridHeight" class="uk-select uk-width-1-2">
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+        </select>
+
+        <div class="uk-flex uk-flex-wrap uk-margin-top" uk-lightbox>
+            <div v-for="i in gridWidth * gridHeight" :class="'uk-width-1-' + gridWidth">
+                <gallery-item :index="i"></gallery-item>
+            </div>
+        </div>
+    </div>
+
+    <template id="galleryItemTpl">
+        <a :href="url" data-type="image">
+            <img :src="url">
+        </a>
+    </template>
+
+    <script>
+        const galleryItem = {
+            template: galleryItemTpl.innerHTML,
+            props: ['index'],
+            computed: {
+                url() {
+                    return 'https://loremflickr.com/800/600?random=' + this.index
+                }
+            }
+        }
+        const app = {
+            components: {
+                galleryItem,
+            },
+            data() {
+                return {
+                    gridWidth: 4,
+                    gridHeight: 4,
+                }
+            }
+        }
+        Vue.createApp(app).mount('#app')
+    </script>
+</body>
+</html>
