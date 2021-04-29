@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор элементов</title>
+    <link rel="stylesheet" href="uikit.min.css">
+    <script src="uikit.min.js"></script>
+    <script src="vue.js"></script>
+</head>
+<body>
+    <div id="app" class="uk-container uk-container-small uk-margin-top">
+        <items-selector :items="items" @user-select="selectedItems = $event"></items-selector>
+
+        <div uk-grid>
+            <div class="uk-animation-shake" v-for="item in selectedItems">
+                <span class="uk-label uk-label-success">{{item}}</span>
+            </div>
+        </div>
+    </div>
+
+    <template id="itemsSelectorTpl">
+        <div uk-grid>
+            <div class="uk-width-2-5">
+                <select class="uk-select" :size="items.length" v-model="selected">
+                    <template v-for="(item, i) in items">
+                        <option :value="i" v-if="!this.selectedIndexes.includes(i)" class="uk-animation-slide-right">{{item}}</option>
+                    </template>
+                </select>
+            </div>
+            <div class="uk-width-1-5 uk-align-center">
+                <button class="uk-button uk-button-primary" @click="deselect"> &lt; </button>
+                <button class="uk-button uk-button-primary" @click="select"> &gt; </button>
+            </div>
+            <div class="uk-width-2-5">
+                <select class="uk-select" :size="items.length" v-model="deselected">
+                    <template v-for="(item, i) in items">
+                        <option :value="i" v-if="this.selectedIndexes.includes(i)" class="uk-animation-slide-left">{{item}}</option>
+                    </template>
+                </select>
+            </div>
+        </div>
+    </template>
+
+    <script>
+        const itemsSelector = {
+            template: itemsSelectorTpl.innerHTML,
+            props: ['items'],
+            emits: ['user-select'],
+            data() {
+                return {
+                    selectedIndexes: [],
+                    selected: null,
+                    deselected: null,
+                }
+            },
+            methods: {
+                select() {
+                    if (this.selected == null) {
+                        return
+                    }
+                    if (this.selectedIndexes.includes(this.selected)) {
+                        return
+                    }
+                    this.selectedIndexes.push(this.selected)
+                    this.selected = null
+                    this.emitUserSelect()
+                },
+                deselect() {
+                    if (this.deselected == null) {
+                        return
+                    }
+                    this.selectedIndexes.splice(this.selectedIndexes.indexOf(this.deselected), 1)
+                    this.deselected = null
+                    this.emitUserSelect()
+                },
+                emitUserSelect() {
+                    const newItems = this.selectedIndexes.map(i => this.items[i])
+                    this.$emit('user-select', newItems)
+                }
+            }
+        }
+        const app = {
+            components: {
+                itemsSelector
+            },
+            data() {
+                return {
+                    items: ['hello', 'world', 'foo', 'bar'],
+                    selectedItems: []
+                }
+            }
+        }
+        Vue.createApp(app).mount('#app')
+    </script>
+</body>
+</html>
