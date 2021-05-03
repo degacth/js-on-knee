@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Календарь задач</title>
+    <link rel="stylesheet" href="libs/uikit.css">
+    <script src="libs/uikit.js"></script>
+    <script src="libs/uikit-icons.js"></script>
+    <script src="libs/vue.js"></script>
+    <style>
+        .calendar-item {
+            width: calc(100% / 7)
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="uk-container uk-container-large">
+        <div class="uk-flex uk-flex-wrap calendar">
+            <div v-for="i in 31" class="calendar-item">{{i}}</div>
+        </div>
+    </div>
+
+    <script src="components/calendar.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
