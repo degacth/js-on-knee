@@ -9,6 +9,7 @@
     <script src="libs/uikit.js"></script>
     <script src="libs/uikit-icons.js"></script>
     <script src="libs/vue.js"></script>
+    <script src="libs/date-utils.js"></script>
     <style>
         .calendar-item {
             width: calc(100% / 7)
@@ -17,10 +18,14 @@
 </head>
 <body>
     <div id="app" class="uk-container uk-container-large">
-        <div class="uk-flex uk-flex-wrap calendar">
-            <div v-for="i in 31" class="calendar-item">{{i}}</div>
-        </div>
+        <calendar></calendar>
     </div>
+
+    <template id="calendarTpl">
+        <div class="uk-flex uk-flex-wrap calendar">
+            <div v-for="i in days" class="calendar-item">{{i}}</div>
+        </div>
+    </template>
 
     <script src="components/calendar.js"></script>
     <script src="app.js"></script>
