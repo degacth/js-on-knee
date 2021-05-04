@@ -22,12 +22,22 @@
     </div>
 
     <template id="calendarTpl">
+        <calendar-selector class="uk-margin-small"></calendar-selector>
         <div class="uk-flex uk-flex-wrap calendar">
-            <div v-for="(_, i) in 7" class="calendar-item">{{i}}</div>
+            <div v-for="(_, i) in 7" class="calendar-item">{{weekday(i)}}</div>
             <div v-for="i in days" class="calendar-item">{{i}}</div>
         </div>
     </template>
 
+    <template id="calendarSelectorTpl">
+        <div class="uk-width-1-3">
+            <button class="uk-margin-small-right" uk-icon="chevron-left" @click="prevMonth"></button>
+            <span class="uk-text-bold uk-text-center uk-text-uppercase uk-width-1-6 uk-inline-block">{{getMonthTitle()}}</span>
+            <button class="uk-margin-small-left" uk-icon="chevron-right" @click="nextMonth"></button>
+        </div>
+    </template>
+
+    <script src="components/calendar-selector.js"></script>
     <script src="components/calendar.js"></script>
     <script src="app.js"></script>
 </body>

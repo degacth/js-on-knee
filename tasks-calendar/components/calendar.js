@@ -1,5 +1,8 @@
 const calendar = {
     template: calendarTpl.innerHTML,
+    components: {
+        calendarSelector,
+    },
     data() {
         const currentDay = new Date()
         const month = currentDay.getMonth()
@@ -12,6 +15,11 @@ const calendar = {
         }
         return {
             days,
+        }
+    },
+    methods: {
+        weekday(i) {
+            return getWeekdayName(i)
         }
     }
 }
