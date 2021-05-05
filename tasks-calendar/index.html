@@ -18,13 +18,13 @@
 </head>
 <body>
     <div id="app" class="uk-container uk-container-large">
-        <calendar></calendar>
+        <calendar :date="calendarDate"></calendar>
     </div>
 
     <template id="calendarTpl">
-        <calendar-selector class="uk-margin-small"></calendar-selector>
+        <calendar-selector :date="date" class="uk-margin-small"></calendar-selector>
         <div class="uk-flex uk-flex-wrap calendar">
-            <div v-for="(_, i) in 7" class="calendar-item">{{weekday(i)}}</div>
+            <div v-for="(_, i) in 7" class="calendar-item uk-text-uppercase">{{weekday(i)}}</div>
             <div v-for="i in days" class="calendar-item">{{i}}</div>
         </div>
     </template>
@@ -34,9 +34,14 @@
             <button class="uk-margin-small-right" uk-icon="chevron-left" @click="prevMonth"></button>
             <span class="uk-text-bold uk-text-center uk-text-uppercase uk-width-1-6 uk-inline-block">{{getMonthTitle()}}</span>
             <button class="uk-margin-small-left" uk-icon="chevron-right" @click="nextMonth"></button>
+
+            <button class="uk-margin-small-right" uk-icon="chevron-left" @click="prevYear"></button>
+            <span class="uk-text-bold uk-text-center uk-text-uppercase uk-width-1-6 uk-inline-block">{{getYear()}}</span>
+            <button class="uk-margin-small-left" uk-icon="chevron-right" @click="nextYear"></button>
         </div>
     </template>
 
+    <script src="state.js"></script>
     <script src="components/calendar-selector.js"></script>
     <script src="components/calendar.js"></script>
     <script src="app.js"></script>
