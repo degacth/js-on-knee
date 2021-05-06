@@ -4,5 +4,10 @@ const state = Vue.reactive({
         const date = new Date(this.calendarDate)
         date.setMonth(date.getMonth() + diff)
         this.calendarDate = date
+    },
+    updateCalendarDateYear(diff) {
+        const date = new Date(this.calendarDate)
+        date.setFullYear(date.getFullYear() + diff)
+        this.calendarDate = date
     }
 })

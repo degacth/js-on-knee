@@ -25,7 +25,9 @@
         <calendar-selector :date="date" class="uk-margin-small"></calendar-selector>
         <div class="uk-flex uk-flex-wrap calendar">
             <div v-for="(_, i) in 7" class="calendar-item uk-text-uppercase">{{weekday(i)}}</div>
-            <div v-for="i in days" class="calendar-item">{{i}}</div>
+            <div v-for="day in days" class="calendar-item">
+                <calendar-item :date="day" v-if="day"></calendar-item>
+            </div>
         </div>
     </template>
 
@@ -41,8 +43,20 @@
         </div>
     </template>
 
+    <template id="calendarItemTpl">
+        <div class="uk-card uk-card-small uk-card-hover uk-margin-small-top" :class="itemClasses">
+            <div class="uk-card-header">
+                <div class="uk-card-title">
+                    <button class="uk-icon-link" uk-icon="plus-circle"></button>
+                    <span class="uk-float-right uk-text-bold">{{date.getDate()}}</span>
+                </div>
+            </div>
+        </div>
+    </template>
+
     <script src="state.js"></script>
     <script src="components/calendar-selector.js"></script>
+    <script src="components/calendar-item.js"></script>
     <script src="components/calendar.js"></script>
     <script src="app.js"></script>
 </body>

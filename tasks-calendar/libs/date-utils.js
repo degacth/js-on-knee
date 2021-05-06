@@ -40,3 +40,21 @@ function getMonthName(index) {
 assertEquals(getMonthName(0), 'январь')
 assertEquals(getMonthName(1), 'февраль')
 assertEquals(getMonthName(11), 'декабрь')
+
+function getISODate(date) {
+    const d = new Date(date)
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset())
+    return d.toISOString().split('T')[0]
+}
+
+assertEquals(getISODate(new Date(2020, 1, 29)), '2020-02-29')
+assertEquals(getISODate(new Date(2021, 4, 1)), '2021-05-01')
+
+function what(date) {
+
+}
+
+assertEquals(what(new Date(2020, 0, 1)), '00:00:00')
+assertEquals(what(new Date(2020, 0, 1, 1)), '01:00:00')
+assertEquals(what(new Date(2020, 0, 1, 1, 33)), '01:33:00')
+assertEquals(what(new Date(2020, 0, 1, 22, 33, 44)), '22:33:44')

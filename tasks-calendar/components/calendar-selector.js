@@ -15,14 +15,10 @@ const calendarSelector = {
             return this.date.getFullYear()
         },
         prevYear() {
-            const date = new Date(this.date)
-            date.setFullYear(date.getFullYear() - 1)
-            this.date = date
+            state.updateCalendarDateYear(-1)
         },
         nextYear() {
-            const date = new Date(this.date)
-            date.setFullYear(date.getFullYear() + 1)
-            this.date = date
+            state.updateCalendarDateYear(1)
         }
     },
 }
