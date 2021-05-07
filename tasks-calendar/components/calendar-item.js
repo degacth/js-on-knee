@@ -9,5 +9,10 @@ const calendarItem = {
                 'uk-card-default': !isCurrentDate,
             }
         }
+    },
+    methods: {
+        addTask() {
+            state.newTask = {}
+        }
     }
 }

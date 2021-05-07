@@ -1,5 +1,6 @@
 const state = Vue.reactive({
     calendarDate: new Date(),
+    newTask: null,
     updateCalendarDateMonth(diff) {
         const date = new Date(this.calendarDate)
         date.setMonth(date.getMonth() + diff)

@@ -51,7 +51,7 @@ assertEquals(getISODate(new Date(2020, 1, 29)), '2020-02-29')
 assertEquals(getISODate(new Date(2021, 4, 1)), '2021-05-01')
 
 function what(date) {
-
+    return date.toLocaleTimeString('ru-RU')
 }
 
 assertEquals(what(new Date(2020, 0, 1)), '00:00:00')

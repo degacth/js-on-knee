@@ -1,6 +1,7 @@
 const app = {
     components: {
         calendar,
+        taskForm,
     },
     data() {
         return state

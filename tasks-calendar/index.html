@@ -19,6 +19,7 @@
 <body>
     <div id="app" class="uk-container uk-container-large">
         <calendar :date="calendarDate"></calendar>
+        <task-form :new-task="newTask"></task-form>
     </div>
 
     <template id="calendarTpl">
@@ -47,14 +48,65 @@
         <div class="uk-card uk-card-small uk-card-hover uk-margin-small-top" :class="itemClasses">
             <div class="uk-card-header">
                 <div class="uk-card-title">
-                    <button class="uk-icon-link" uk-icon="plus-circle"></button>
+                    <button class="uk-icon-link" uk-icon="plus-circle" @click="addTask"></button>
                     <span class="uk-float-right uk-text-bold">{{date.getDate()}}</span>
                 </div>
             </div>
         </div>
     </template>
 
+    <template id="taskFormTpl">
+        <form id="task-form" uk-modal>
+            <div class="uk-modal-dialog" uk-overflow-auto>
+                <div class="uk-modal-header">
+                    <h2 class="uk-modal-title">Добавить задачу</h2>
+                </div>
+                <div class="uk-modal-body">
+                    <div class="uk-form-horizontal uk-margin-small">
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="task-title">Заголовок задачи</label>
+                            <div class="uk-form-controls">
+                                <input type="text" class="uk-input" id="task-title" required v-model="formModel.title">
+                            </div>
+                        </div>
+
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="task-description">Описание задачи</label>
+                            <div class="uk-form-controls">
+                                <textarea class="uk-textarea" id="task-description" v-model="formModel.description"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="uk-margin">
+                            <label class="uk-form-label" for="task-date">Дата исполнения</label>
+                            <div class="uk-form-controls">
+                                <input type="date" class="uk-input uk-width-1-2" id="task-date" required v-model="formModel.date">
+                                <input type="number" min="0" max="23" class="uk-input uk-width-1-4" required v-model="formModel.hours">
+                                <input type="number" min="0" max="59" class="uk-input uk-width-1-4" required v-model="formModel.minutes">
+                            </div>
+                        </div>
+
+                        <div class="uk-margin">
+                            <label class="uk-form-label">Закончена</label>
+                            <div class="uk-form-controls uk-form-controls-text">
+                                <label><input type="radio" class="uk-radio" name="finished" v-model="formModel.finished" :value="true"> Да</label>
+                                <br>
+                                <label><input type="radio" class="uk-radio" name="finished" v-model="formModel.finished" :value="false"> Нет</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="uk-modal-footer uk-text-right">
+                    <button class="uk-button uk-button-default uk-modal-close" type="button">Отмена</button>
+                    <button class="uk-button uk-button-primary" type="submit">Сохранить</button>
+                </div>
+            </div>
+        </form>
+    </template>
+
     <script src="state.js"></script>
+    <script src="components/task-form.js"></script>
     <script src="components/calendar-selector.js"></script>
     <script src="components/calendar-item.js"></script>
     <script src="components/calendar.js"></script>
