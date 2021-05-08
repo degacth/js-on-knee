@@ -18,7 +18,7 @@
 </head>
 <body>
     <div id="app" class="uk-container uk-container-large">
-        <calendar :date="calendarDate"></calendar>
+        <calendar :date="calendarDate" :tasks="tasks"></calendar>
         <task-form :new-task="newTask"></task-form>
     </div>
 
@@ -56,7 +56,7 @@
     </template>
 
     <template id="taskFormTpl">
-        <form id="task-form" uk-modal>
+        <form id="task-form" uk-modal ref="form" @submit.prevent="save">
             <div class="uk-modal-dialog" uk-overflow-auto>
                 <div class="uk-modal-header">
                     <h2 class="uk-modal-title">Добавить задачу</h2>
@@ -99,7 +99,7 @@
 
                 <div class="uk-modal-footer uk-text-right">
                     <button class="uk-button uk-button-default uk-modal-close" type="button">Отмена</button>
-                    <button class="uk-button uk-button-primary" type="submit">Сохранить</button>
+                    <button class="uk-button uk-button-primary" type="submit" :disabled="!$refs.form?.checkValidity()">Сохранить</button>
                 </div>
             </div>
         </form>

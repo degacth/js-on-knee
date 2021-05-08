@@ -12,7 +12,7 @@ const calendarItem = {
     },
     methods: {
         addTask() {
-            state.newTask = {}
+            state.newTask = {initDate: this.date}
         }
     }
 }
