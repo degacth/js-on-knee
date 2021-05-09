@@ -1,11 +1,27 @@
 const calendar = {
     template: calendarTpl.innerHTML,
-    props: ['date'],
+    props: ['date', 'tasks'],
     components: {
         calendarSelector,
         calendarItem,
     },
     watch: {
+        tasks: {
+            immediate: true,
+            handler() {
+                const taskIndex = {}
+                for (let i = 0; i < this.tasks.length; i++) {
+                    const task = this.tasks[i]
+                    const key = this.getIndexKey(task.date)
+                    const tasksForDay = taskIndex[key] || []
+                    tasksForDay.push(task)
+                    tasksForDay.sort(this.sortTasks)
+                    taskIndex[key] = tasksForDay
+                }
+
+                this.taskIndex = taskIndex
+            }
+        },
         date: {
             immediate: true,
             handler() {
@@ -25,6 +41,12 @@ const calendar = {
     methods: {
         weekday(i) {
             return getWeekdayName(i)
+        },
+        sortTasks(a, b) {
+            return a.date.getTime() - b.date.getTime()
+        },
+        getIndexKey(date) {
+            return date.toLocaleDateString()
         }
     }
 }

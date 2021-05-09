@@ -32,6 +32,5 @@ const state = Vue.reactive({
         task.finished = formModel.finished
 
         this.tasks = this.tasks.concat([task])
-        console.log(this.tasks)
     }
 })
