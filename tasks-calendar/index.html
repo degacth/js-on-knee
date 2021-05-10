@@ -65,7 +65,7 @@
                             <a :title="task.title">{{task.title}}</a>
                         </div>
                     </li>
-                    <li class="show-all-tasks">
+                    <li class="show-all-tasks" v-if="tasks.length > maxTasks">
                         <a class="uk-badge">{{tasks.length}}</a>
                     </li>
                 </ul>
