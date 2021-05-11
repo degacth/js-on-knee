@@ -25,7 +25,7 @@
 <body>
     <div id="app" class="uk-container uk-container-large">
         <calendar :date="calendarDate" :tasks="tasks"></calendar>
-        <task-form :new-task="newTask"></task-form>
+        <task-form :new-task="newTask" :edit-task="editTask"></task-form>
     </div>
 
     <template id="calendarTpl">
@@ -62,7 +62,7 @@
                 <ul class="uk-list">
                     <li v-for="task in limitTasks()">
                         <div class="uk-text-truncate">
-                            <a :title="task.title">{{task.title}}</a>
+                            <a :title="task.title" @click.prevent="$state.setEditTask(task)">{{task.title}}</a>
                         </div>
                     </li>
                     <li class="show-all-tasks" v-if="tasks.length > maxTasks">
@@ -77,7 +77,8 @@
         <form id="task-form" uk-modal ref="form" @submit.prevent="save">
             <div class="uk-modal-dialog" uk-overflow-auto>
                 <div class="uk-modal-header">
-                    <h2 class="uk-modal-title">Добавить задачу</h2>
+                    <h2 class="uk-modal-title" v-if="isEditMode()">Редактировать задачу</h2>
+                    <h2 class="uk-modal-title" v-else>Добавить задачу</h2>
                 </div>
                 <div class="uk-modal-body">
                     <div class="uk-form-horizontal uk-margin-small">
@@ -117,6 +118,7 @@
 
                 <div class="uk-modal-footer uk-text-right">
                     <button class="uk-button uk-button-default uk-modal-close" type="button">Отмена</button>
+                    <button class="uk-button uk-button-danger" type="button" v-if="isEditMode()" @click="removeTask()">Удалить</button>
                     <button class="uk-button uk-button-primary" type="submit" :disabled="!$refs.form?.checkValidity()">Сохранить</button>
                 </div>
             </div>

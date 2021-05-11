@@ -33,6 +33,7 @@ function loadTasksFromStore() {
 const state = Vue.reactive({
     calendarDate: new Date(),
     newTask: null,
+    editTask: null,
     tasks: loadTasksFromStore(),
     updateCalendarDateMonth(diff) {
         const date = new Date(this.calendarDate)
@@ -44,17 +45,28 @@ const state = Vue.reactive({
         date.setFullYear(date.getFullYear() + diff)
         this.calendarDate = date
     },
+    setEditTask(task) {
+        this.editTask = {task}
+    },
     addTask(formModel) {
-        const date = new Date(formModel.date)
-        date.setHours(formModel.hours)
-        date.setMinutes(formModel.minutes)
+        const task = new Task(null)
+        this.updateTaskWithData(formModel, task)
+        this.tasks = this.tasks.concat([task])
+        saveTasksToStore(this.tasks)
+    },
+    updateTask(formModel, task) {
+        this.updateTaskWithData(formModel, task)
+        this.tasks = this.tasks.concat([])
+        saveTasksToStore(this.tasks)
+    },
+    updateTaskWithData(formModel, task) {
+        const taskDate = new Date(formModel.date)
+        taskDate.setMinutes(formModel.minutes)
+        taskDate.setHours(formModel.hours)
 
-        const task = new Task(date)
+        task.date = taskDate
         task.title = formModel.title
         task.description = formModel.description
         task.finished = formModel.finished
-
-        this.tasks = this.tasks.concat([task])
-        saveTasksToStore(this.tasks)
     }
 })
