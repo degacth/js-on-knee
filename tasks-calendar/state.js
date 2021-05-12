@@ -34,6 +34,7 @@ const state = Vue.reactive({
     calendarDate: new Date(),
     newTask: null,
     editTask: null,
+    showTasks: [],
     tasks: loadTasksFromStore(),
     updateCalendarDateMonth(diff) {
         const date = new Date(this.calendarDate)
@@ -68,5 +69,16 @@ const state = Vue.reactive({
         task.title = formModel.title
         task.description = formModel.description
         task.finished = formModel.finished
+    },
+    removeTask(task) {
+        const index = this.tasks.indexOf(task)
+        if (index < 0) {
+            console.error('failed to remove task: ' + task)
+            return
+        }
+
+        this.tasks.splice(index, 1)
+        this.tasks = this.tasks.concat([])
+        saveTasksToStore(this.tasks)
     }
 })

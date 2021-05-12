@@ -2,6 +2,7 @@ const app = {
     components: {
         calendar,
         taskForm,
+        tasksList,
     },
     data() {
         return state

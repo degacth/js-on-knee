@@ -60,7 +60,8 @@ const taskForm = {
             this.$forceUpdate()
         },
         removeTask() {
-
+            state.removeTask(this.editTask.task)
+            this.form.hide()
         }
     }
 }
