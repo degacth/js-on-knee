@@ -45,7 +45,7 @@
 
     <template id="calendarSelectorTpl">
         <div class="uk-width-1-3 uk-margin-small-top">
-            <a class="uk-icon-button uk-margin-small-right" uk-icon="list"></a>
+            <a class="uk-icon-button uk-margin-small-right" uk-icon="list" @click.prevent="$state.showTasks = [...$state.tasks]"></a>
 
             <button class="uk-margin-small-right" uk-icon="chevron-left" @click="prevMonth"></button>
             <span class="uk-text-bold uk-text-center uk-text-uppercase uk-width-1-6 uk-inline-block">{{getMonthTitle()}}</span>
