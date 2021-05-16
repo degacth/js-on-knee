@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ronnie James DIO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            background: no-repeat center center url("dio.jpg") black;
+            background-size: contain;
+        }
+
+        #canvas {
+            opacity: .6;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        const width = window.innerWidth
+        const height = window.innerHeight
+        const rand = max => parseInt(Math.random() * max)
+        canvas.width = width
+        canvas.height = height
+
+        const ctx = canvas.getContext('2d')
+        const stars = new Array(1000)
+            .fill(null)
+            .map(_ => rand(3) + 1)
+            .map(size => ({
+                x: rand(width) - size,
+                y: rand(height) - size,
+                size,
+            }))
+
+        const render = _ => {
+            ctx.fillStyle = 'black'
+            ctx.fillRect(0, 0, width, height)
+            ctx.fillStyle = 'white'
+
+            stars.forEach(star => {
+                ctx.fillRect(star.x, star.y, star.size, star.size)
+                star.y += 1
+                if (star.y > height) star.y = 0
+
+                star.x += rand(3)
+                if (star.x > width) star.x = 0
+            })
+
+            requestAnimationFrame(render)
+        }
+
+        requestAnimationFrame(render)
+    </script>
+</body>
+</html>
