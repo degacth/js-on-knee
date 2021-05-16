@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 002</title>
+    <link rel="stylesheet" href="uikit.css">
+</head>
+<body class="uk-container uk-margin-top">
+    <h2>Выражения (Expression) и Function Declaration</h2>
+    <ul class="uk-list uk-list-divider">
+        <li>
+            Выражения:
+            <ul>
+                <li><code>const name = 'Alex Monad'</code></li>
+                <li><code>const hello = function (name) {return 'Hello ' + name + '!'}</code></li>
+                <li><code>const helloMessage = hello(name)</code></li>
+                <li><code>let mod = someNum < 0 ? someNum * -1 : someNum</code></li>
+                <li><code>const something = ...</code></li>
+            </ul>
+        </li>
+
+        <li>
+            <strong>Не</strong> выражения
+            <ul>
+                <li><code>function someName() {}</code></li>
+                <li><code>if (true) {} else {}</code></li>
+                <li><code>for (;;) {}</code></li>
+                <li><code>while (false) {}</code></li>
+                <li><code>const result = ???</code></li>
+            </ul>
+        </li>
+
+        <li>Hoisting - подъём имени переменной или функции</li>
+    </ul>
+
+    <script>
+        hello1('alex')
+
+        function hello1(name) {
+            console.log('hello', name)
+        }
+
+        console.log('hello #2', hello2)
+
+        if (false) {
+            function hello2() {
+            }
+        }
+
+        for (let i = 0; i < 0; i++) {
+            function hello3() {}
+        }
+
+        function _() {
+            function hello4() {}
+        }
+
+    </script>
+</body>
+
+</html>
