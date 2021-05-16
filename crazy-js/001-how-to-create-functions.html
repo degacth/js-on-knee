@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 001</title>
+    <link rel="stylesheet" href="uikit.css">
+</head>
+<body class="uk-container uk-margin-top">
+    <h2>Способы создания функций</h2>
+    <ul class="uk-list uk-list-bullet uk-list-divider">
+        <li>Function declaration<br> <code>function name() {}</code></li>
+        <li>Function expression<br> <code>const name = function() {}</code></li>
+        <li>Arrow function<br> <code>const mult = (a, b) => {return a * b}</code></li>
+        <li>Bind function<br> <code>const log = console.log.bind()</code></li>
+        <li>Function constructor<br> <code>const div = new Function('a', 'b', 'return a / b')</code></li>
+    </ul>
+
+    <script>
+        // Function declaration
+        function hello1(name) {
+            console.log('hello', name)
+        }
+        hello1('declaration')
+
+        // Function expression
+        const hello2 = function(name) {
+            console.log('hello', name)
+        }
+        hello2('expression')
+
+        // Arrow function
+        const hello3 = name => console.log('hello', name)
+        hello3('arrow')
+
+        // Bind function
+        const hello4 = console.log.bind(null, 'hello')
+        hello4('bind')
+
+        // Function constructor
+        const hello5 = new Function('name', "console.log('hello', name)")
+        hello5('constructor')
+
+        // Реализуйте все функции от add1 ... add5 соответствующими способами
+        console.assert(add1(4, 2) === 6, 'implement declaration')
+        console.assert(add2(8, 4) === 12, 'implement expression')
+        console.assert(add3(9, 7) === 16, 'implement arrow')
+        console.assert(add4(100, 200) === 300, 'implement bind')
+        console.assert(add5(100, -50) === 50, 'implement with constructor')
+    </script>
+</body>
+</html>
