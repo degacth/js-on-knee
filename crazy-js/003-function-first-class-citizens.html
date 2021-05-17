@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 003</title>
+    <link rel="stylesheet" href="uikit.css">
+</head>
+<body class="uk-container uk-margin-top">
+    <h2>Функции как объекты первого класса</h2>
+
+    <ul class="uk-list uk-list-divider">
+        <li>Функции можно сохранять в переменные (константы)<br> <code>const myAlert = alert</code></li>
+        <li>Функции можно передавать в качестве аргументов<br> <code>setTimeout(myAlert, 1000)</code></li>
+        <li>Функции можно возращать из других функций<br> <code>function(a) { return function(b) {return a + b} }</code>
+        </li>
+        <li>Если язык программирования поддерживает функции первого класса,<br>
+            то этот язык поддерживает "Функциональное программирование &lambda;"</li>
+    </ul>
+
+    <button class="uk-button uk-button-primary" id="changeMe">change me</button>
+    <button class="uk-button uk-button-primary" id="clickMe">click me</button>
+
+    <script>
+        const onButtonClick = function(button, cls, after) {
+            return function() {
+                button.classList.toggle(cls)
+                after()
+            }
+        }
+
+        changeMe.onclick = onButtonClick(changeMe, 'uk-button-danger', function() {
+            let rotation = +changeMe.style.transform.replace(/[^\d]/g, '') || 0
+            rotation += 45
+            changeMe.style.transform = 'rotate('+rotation+'deg)'
+        })
+        clickMe.onclick = onButtonClick(clickMe, 'uk-button-secondary', function() {
+            clickMe.textContent = '+ ' + clickMe.textContent + ' +'
+        })
+
+        const actual = runForAB(10)(100)(function (a, b) {
+            return a * b
+        })
+
+        console.assert(actual === 1000, 'implement "run for a b" function')
+    </script>
+</body>
+</html>
