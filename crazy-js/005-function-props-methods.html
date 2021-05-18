@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 005</title>
+    <link rel="stylesheet" href="uikit.css">
+</head>
+<body class="uk-container uk-margin-top">
+    <h2>Свойства и методы функций</h2>
+    <ul class="uk-list uk-list-bullet">
+        <li>Функции имеют имена <code>console.log.name</code></li>
+        <li>Функции не имеющие имени называются <i>анoнимными</i></li>
+        <li>Функции имеют длинну, которая определяется количеством принимаемых аргументов<br> <code>parseInt.length</code></li>
+        <li>
+            Функции можно вызывать специальными методами
+            <ul>
+                <li>someFunction.apply(context, [arg1, arg2, ...])</li>
+                <li>someFunction.call(context, arg1, arg2, ...)</li>
+            </ul>
+        </li>
+    </ul>
+    <button id="button" class="uk-button uk-button-secondary uk-width-1-3">what is the name?</button>
+    <pre id="code"></pre>
+
+    <script>
+        const superFunctionName = function(a, b) {
+            const functionName = this.onclick.name
+            const functionLen = this.onclick.length
+            this.textContent = functionName + ' ' + functionLen
+            showCode.call(code, this.onclick)
+        }
+
+        const showCode = function(f) {
+            this.textContent = f.toString()
+        }
+
+        button.onclick = superFunctionName
+
+        const minusAll = function() {
+
+        }
+
+        console.assert(minusAll('hello', 'world', 'foo', 'bar') === 'hello-world-foo-bar', 'implement minus all function')
+        console.assert(minusAll('implement', 'it') === 'implement-it', 'implement minus all function')
+    </script>
+</body>
+</html>
