@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 004</title>
+    <link rel="stylesheet" href="uikit.css">
+</head>
+<body class="uk-container uk-margin-top">
+    <h2>Контекст функции</h2>
+    <ul class="uk-list uk-list-divider">
+        <li>Контекст функции <code> === this</code></li>
+        <li>На самом верхнем уровне (глобальная область) <code>this === window</code></li>
+        <li>Контекс может изменяться если функция вызывается от имени другого объекта</li>
+        <li>
+            <code><strong>this</strong></code>
+            <ul>
+                <li>есть всегда</li>
+                <li>может быть не предсказуем</li>
+                <li>можно привязать к функции НАВСЕГДА!</li>
+            </ul>
+        </li>
+    </ul>
+
+    <input type="color" id="colorPicker" class="uk-input uk-width-1-4">
+    <button id="updateBgButton" class="uk-button uk-button-default uk-width-1-4"> ⟳ </button>
+
+    <script>
+        const storageOfColor = {
+            bgColor: 'tomato',
+            setBgColor() {
+                this.bgColor = colorPicker.value
+            }
+        }
+
+        const updateBg = function() {
+            this.style.background = storageOfColor.bgColor
+        }
+        updateBgButton.onclick = updateBg
+        document.ondblclick = storageOfColor.setBgColor.bind(storageOfColor)
+
+        const widthIncrease = {
+            innerWidth: 0,
+            increase() {
+                this.innerWidth++
+                updateBgButton.textContent = this.innerWidth
+            }
+        }
+        window.onclick = widthIncrease.increase
+    </script>
+</body>
+</html>
