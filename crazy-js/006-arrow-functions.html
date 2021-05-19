@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 006</title>
+    <link rel="stylesheet" href="uikit.css">
+</head>
+<body class="uk-container uk-margin-top">
+    <h2>Стрелочные функции</h2> 
+    <ul class="uk-list uk-list-bullet uk-list-divider">
+        <li>Жёсткая привязка к <code>this</code></li>
+        <li>Отсутствие переменной <code>arguments</code></li>
+        <li>Если это функция одного аргумента, то круглые скобки можно опустить<br> <code>const sayHello = name => 'Hello ' + name</code></li>
+        <li>Две формы записи
+            <ul>
+                <li>Короткая форма<br> <code>const mult = (a, b) => a * b</code></li>
+                <li>Полная форма<br> <code>const div = (a, b) => { return a / b }</code></li>
+            </ul>
+        </li>
+    </ul>
+
+    <input type="range" class="uk-range" id="range">
+
+    <script>
+        document.body.onload = (function() {
+            range.oninput = () => this.style.opacity = range.value * 0.01
+        }).bind(document.body)
+
+        const runForAB = a => b => f => f(a, b)
+
+        const actual = runForAB(10)(100)(function (a, b) {
+            return a * b
+        })
+
+        console.assert(actual === 1000, 'implement "run for a b" function')
+
+        const counter = {
+            count: 0,
+            inc() {
+                this.count++
+                range.value = this.count
+            }
+        }
+
+        window.onclick = counter.inc
+    </script>
+</body>
+</html>
