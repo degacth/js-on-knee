@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 007</title>
+    <link rel="stylesheet" href="uikit.css">
+</head>
+<body class="uk-container uk-margin-top">
+    <h2>Функции высшего порядка</h2>
+    <ul class="uk-list">
+        <li>Это функции которые принимают другие функции
+            <ul>
+                <li><code>[1,2,3].map(n => n * 2)</code></li>
+                <li><code>setTimeout(() => console.log('hello after 1 sec'), 1000)</code></li>
+            </ul>
+        </li>
+        <li>Это функции которые возвращают другие функции
+            <ul>
+                <li><code>console.log.bind(null, 'hello', 'world')</code></li>
+                <li><code>const runForAB => a => b => f => f(a, b)</code></li>
+            </ul>
+        </li>
+    </ul>
+
+    <hr>
+    <div class="uk-flex">
+        <div>
+            <div class="uk-width-1-2">
+                <input class="uk-input uk-width-1-6" placeholder="?">
+                <input class="uk-input uk-width-1-6" placeholder="?">
+                <input class="uk-input uk-width-1-6" placeholder="?">
+                <input class="uk-input uk-width-1-6" placeholder="?">
+                <input class="uk-input uk-width-1-6" placeholder="?">
+            </div>
+            _
+            <div class="uk-width-1-2">
+                <span class="uk-width-1-6 uk-inline-block"></span>
+                <input class="uk-input uk-width-1-6" placeholder="?">
+                <input class="uk-input uk-width-1-6" placeholder="?">
+                <input class="uk-input uk-width-1-6" placeholder="?">
+                <input class="uk-input uk-width-1-6" placeholder="?">
+            </div>
+            <hr class="uk-width-1-2">
+            <div class="uk-width-1-2">
+                <span class="uk-width-1-6 uk-inline-block uk-text-center uk-text-bold">3</span>
+                <span class="uk-width-1-6 uk-inline-block uk-text-center uk-text-bold">3</span>
+                <span class="uk-width-1-6 uk-inline-block uk-text-center uk-text-bold">3</span>
+                <span class="uk-width-1-6 uk-inline-block uk-text-center uk-text-bold">3</span>
+                <span class="uk-width-1-6 uk-inline-block uk-text-center uk-text-bold">3</span>
+            </div>
+            <br>
+            <div class="uk-label uk-label-danger" id="danger"></div>
+            <div class="uk-label uk-label-success" id="success"></div>
+        </div>
+
+        <div>
+            Используйте все цифры от одного до девяти только один раз, чтобы заполнить
+            инпуты и завершить равенство<br>
+
+            <code>XXXXX - XXXX = 33333</code>
+        </div>
+    </div>
+
+    <script>
+        const inputs = [ ... document.querySelectorAll('input')]
+        const winResult = 33333
+        const isRightAnswer = values => {
+            const hasEmptyValue = values.some(v => v === '')
+            if (hasEmptyValue) return 'Некоторые значения пустые'
+
+            const isSingleChars = values.every(v => v.length === 1)
+            if (!isSingleChars) return 'Некоторые значения более 1 символа'
+
+            const numbers = values.map(v => +v)
+            const isNumbers = numbers.every(i => !isNaN(i))
+            if (!isNumbers) return 'Некоторые значения не являются числами'
+
+            const isNumbersNotInRange = numbers.some(n => n > 9 || n < 1)
+            if (isNumbersNotInRange) return 'Значения должны быть в диапазоне от 1 .. 9'
+
+            const isDifferentNumbers = new Set(numbers).size === numbers.length
+            if (!isDifferentNumbers) return 'Все числа должны быть разными'
+
+            const allNumbers = numbers.join('')
+            const n1 = +allNumbers.substr(0, 5)
+            const n2 = +allNumbers.substr(5)
+            const operationResult = n1 - n2
+
+            const isCorrectNumber = operationResult === winResult
+            if (!isCorrectNumber) return 'Неверный результат равенства: ' + operationResult
+        }
+
+        const textUpdater = el => text => el.textContent = text
+        const dangerUpdater = textUpdater(danger)
+        const successUpdater = textUpdater(success)
+        const clearLabels = () => [dangerUpdater, successUpdater].forEach(f => f(''))
+
+        const checkGameConditions = () => {
+            clearLabels()
+            const values = inputs.map(input => input.value.trim())
+            const error = isRightAnswer(values)
+
+            if (error) return dangerUpdater(error)
+            successUpdater('Победа!!!')
+        }
+
+        inputs.forEach(input => input.oninput = checkGameConditions)
+        checkGameConditions()
+    </script>
+</body>
+</html>
