@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 008</title>
+    <link rel="stylesheet" href="uikit.css">
+</head>
+<body class="uk-container uk-margin-top">
+    <h2>Функции высшего порядка <span class="uk-text-danger">против</span> циклов</h2>
+    <ul class="uk-list uk-list-bullet">
+        <li>Преобразование массива значение в массив той же длинны, но других значений<br>
+            <code>for (let i = 0; i < arr.length; i++) other[i] = arr[i] * 2</code><br>
+            <code>const other = arr.map(n => n * 2)</code>
+        </li>
+        <li>Удаление элементов из массива<br>
+            <code>for (let i = 0; i < arr.length; i++) if (arr[i] > 5) other.push(arr[i]</code><br>
+            <code>const other = arr.filter(n => n > 5)</code>
+        </li>
+        <li>Обработка всех элементов массива<br>
+            <code>for (let i = 0; i < arr.length; i++) console.log(arr[i])</code><br>
+            <code>arr.forEach(n => console.log(n))</code>
+        </li>
+        <li>Проверка массива на ниличие определённых значений<br>
+            <code>for (let i = 0; i < arr.length; i++) if (arr[i] > 100500) hasBigNumber = true </code><br>
+            <code>const hasBigNumber = arr.some(n => n > 100500)</code>
+        </li>
+    </ul>
+
+    <div class="uk-flex">
+        <div id="someText" class="uk-width-1-3">
+            Однажды, в студеную зимнюю пору<br>
+            Я из лесу вышел; был сильный мороз.<br>
+            Гляжу, поднимается медленно в гору<br>
+            Лошадка, везущая хворосту воз.<br>
+            И шествуя важно, в спокойствии чинном,<br>
+            Лошадку ведет под уздцы мужичок<br>
+            В больших сапогах, в полушубке овчинном,<br>
+            В больших рукавицах… а сам с ноготок!<br>
+        </div>
+        <div class="uk-width-1-3">
+            <label class="uk-text-meta"><input type="checkbox" class="uk-checkbox" id="upperCase" required> Большие буквы</label><br>
+            <label class="uk-text-meta"><input type="checkbox" class="uk-checkbox" id="onlyLetters" required> Только буквы</label><br>
+            <input type="number" class="uk-input uk-form-blank uk-form-small uk-width-1-2" id="minLetters" placeholder="... минимум букв" required>
+            <input type="text" class="uk-input uk-form-blank uk-form-small" id="searchText" placeholder="... введите текст для поиска" required>
+        </div>
+        <div id="result" class="uk-width-1-3 uk-text-meta"></div>
+    </div>
+    <script>
+        const inputs = [... document.querySelectorAll('input')]
+        const words = someText.textContent.trim().split(/\s+/g)
+        const updateTextResults = () => {
+            result.innerHTML = ''
+
+            /*
+            let hasInputValue = false
+            for (let i = 0; i < inputs.length; i++) {
+                const input = inputs[i]
+                if (input.checkValidity()) {
+                    hasInputValue = true
+                    break
+                }
+            }
+            */
+            const hasInputValue = inputs.some(input => input.checkValidity())
+            if (!hasInputValue) return
+
+            let wordsResult = words
+            if (upperCase.checked) {
+                /*
+                const upperCaseWords = []
+                for (let i = 0; i < wordsResult.length; i++) {
+                    const word = wordsResult[i]
+                    upperCaseWords[i] = word.toLocaleUpperCase()
+                }
+                wordsResult = upperCaseWords
+                */
+                wordsResult = wordsResult.map(word => word.toLocaleUpperCase())
+            }
+
+            if (onlyLetters.checked) {
+                /*
+                const onlyLettersWords = []
+                for (let i = 0; i < wordsResult.length; i++) {
+                    const word = wordsResult[i]
+                    onlyLettersWords[i] = word.replace(/[^а-я\w]/ig, '')
+                }
+                wordsResult = onlyLettersWords
+                */
+                wordsResult = wordsResult.map(word => word.replace(/[^а-я\w]/ig, ''))
+            }
+
+            if (+minLetters.value) {
+                const minLettersWords = []
+                for (let i = 0; i < wordsResult.length; i++) {
+                    const word = wordsResult[i]
+                    if (word.length >= +minLetters.value) {
+                        minLettersWords.push(word)
+                    }
+                }
+                wordsResult = minLettersWords
+            }
+
+            if (searchText.value) {
+                /*
+                const foundText = []
+                for (let i = 0; i < wordsResult.length; i++) {
+                    const word = wordsResult[i]
+                    if (word.match(new RegExp(searchText.value, 'ig'))) {
+                        foundText.push(word)
+                    }
+                }
+                wordsResult = foundText
+                */
+                wordsResult = wordsResult.filter(word => word.match(new RegExp(searchText.value, 'ig')))
+            }
+
+            result.innerHTML = wordsResult.join(' ')
+        }
+
+        /*
+        for (let i = 0; i < inputs.length; i++) {
+            const input = inputs[i]
+            input.oninput = updateTextResults
+        }
+        */
+        inputs.forEach(input => input.oninput = updateTextResults)
+        updateTextResults()
+    </script>
+</body>
+</html>
