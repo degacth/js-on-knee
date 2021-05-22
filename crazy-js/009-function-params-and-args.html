@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 009</title>
+    <link rel="stylesheet" href="uikit.css">
+</head>
+<body class="uk-container uk-margin-top">
+    <h2>Параметры и аргументы функций</h2>
+    <ul class="uk-list uk-list-bullet">
+        <li>Терминология
+            <ul>
+                <li>Параметры функции - это те переменные которые находятся в круглых скобках<br>
+                    <code>const someFunction = (param1, param2) => param1 / 2 - param2</code>
+                </li>
+                <li>Аргументы функции - это те значения с которыми вызывают функцию<br>
+                    <code>someFunction(10, 4)</code>
+                </li>
+                <li>Функции вызываются с аргументами, которые записываются в параметры функции</li>
+            </ul>
+        </li>
+        <li>Параметры функций могут иметь значения по умолчанию<br>
+            <code>const parseInt = (val, radix = 10) => [native code]</code>
+        </li>
+        <li>Параметры массивы имеют особый синтексис:
+            <br><code>const head = ([first]) => first</code>
+            <br><code>const tail = ([first, ...remains]) => ramains</code>
+        </li>
+        <li>Параметры объекты также имеют особый синтаксис:
+            <br><code>const configure = (el, {width, style = 'black', fontSize = 24, height = fontSize + 10}) => ... = </code>
+        </li>
+        <li>Вариативная функции
+            <br><code>const max = (...vals) => vals.sort()[vals.length - 1]</code>
+            <br><code>const helloForAll = (name, ...others) => 'Hello, ' + name + ' and ' + others.join() + '!'</code>
+        </li>
+    </ul>
+
+    <div class="uk-button-group">
+        <button class="uk-button uk-button-primary" id="showAlertBtn">show alert</button>
+        <button class="uk-button uk-button-secondary" id="shortOkBtn">short ok message</button>
+        <button class="uk-button uk-button-danger" id="showDangerBtn">show danger</button>
+    </div>
+
+    <script>
+        const showAlert = (text, timeout = 3000, {style = 'primary', animation = 'shake'} = {}) => {
+            $alert = document.createElement('div')
+            $alert.textContent = text
+            const styles = {
+                position: 'absolute',
+                top: '50%',
+                right: '50%',
+                transform: 'translate(-50%, -50%)',
+            }
+
+            Object.entries(styles).forEach(([key, value]) => $alert.style[key] = value)
+            $alert.classList.add(
+                'uk-alert-' + style,
+                'uk-padding-small',
+                'uk-animation-' + animation,
+            )
+            document.body.appendChild($alert)
+            setTimeout(() => document.body.removeChild($alert), timeout)
+        }
+
+        showAlertBtn.onclick = () => showAlert('Alert! Alert!')
+        shortOkBtn.onclick = () => showAlert('OK', 1000)
+        showDangerBtn.onclick = () => showAlert('Alarm! Alarm!', 5000, {style: 'danger', animation: 'scale-down'})
+
+
+        const minusAll = () => {
+        }
+
+        console.assert(minusAll('hello', 'world', 'foo', 'bar') === 'hello-world-foo-bar', 'implement minus all function')
+        console.assert(minusAll('implement', 'it') === 'implement-it', 'implement minus all function')
+    </script>
+</body>
+</html>
