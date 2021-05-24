@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 10</title>
+    <link rel="stylesheet" href="uikit.css">
+</head>
+<body class="uk-container" style="overflow-y: scroll;">
+    <h2 class="uk-margin-top">Генераторы</h2>
+    <ul class="uk-list uk-list-bullet uk-list-collapse">
+        <li>Генератор - это обычная функция которая может многократно возвращать результаты<br>
+            <code>const ints = function* (start) { while (true) yield start++ }</code>
+        </li>
+        <li>Главные особенности генераторов<br>
+            <ul class="uk-list uk-list-bullet uk-list-collapse">
+                <li>после ключевого слова "function" пишеться звёздочка<br>
+                    <code>function<strong>*</strong> gen() {}</code>
+                </li>
+                <li>для возврата значений используется "yield"<br>
+                    <code>function* gen() { <strong>yield</strong> 'someValue' }</code>
+                </li>
+                <li>"yield" возвращает не само значение, а структуру вида: <br>
+                    <code>{ value: 'someValue', done: false }</code>
+                </li>
+            </ul>
+        </li>
+        <li>Вызов "генераторной функции" возвращает генератор, который будет возвращать результаты<br>
+            <code>const intsGen = ints(100)</code>
+        </li>
+        <li>Для получения первого и последующих результатов необходимо вызвать метод <code>next()</code><br>
+            <code>const someInt = intsGen.next().value</code>
+        </li>
+        <li>Метод "next" может принимать значения и передавать их генератору<br>
+            <code>function* incrementer() { let n = 1; while (n) n = yield ++n }</code> использование <code>incrementer().next(0)</code>
+        </li>
+    </ul>
+    <div class="uk-placeholder uk-text-center uk-position-relative" id="beesBlock"></div>
+    <script>
+        const fibonacci = function* () {
+            let prev = 0
+            let current = 1
+            yield current
+            while (true) {
+                [prev, current] = [current, prev + current]
+                yield current
+            }
+        }
+        const fibGen = fibonacci() // new Fibonacci
+
+        const connectElements = (el1, el2) => {
+            const rect1 = el1.getBoundingClientRect()
+            const rect2 = el2.getBoundingClientRect()
+
+            const rectCenter = rect => [rect.left + rect.width / 2, rect.top + rect.height / 2]
+            const [center1, center2] = [rect1, rect2].map(rectCenter)
+            const centers = [center1, center2]
+
+            const minByIndex = index => Math.min(...centers.map(c => c[index]))
+            const x = minByIndex(0)
+            const y = minByIndex(1) - document.body.getBoundingClientRect().top
+
+            const diffByIndex = index => Math.abs(center1[index] - center2[index])
+            const minSize = 1
+            const width = diffByIndex(0) || minSize
+            const height = diffByIndex(1) || minSize
+
+            const createElement = name => document.createElementNS('http://www.w3.org/2000/svg', name)
+            const connector = createElement('svg')
+            const connectorAttrs = {
+                width,
+                height
+            }
+            const setAttrsForElement = (el, attrs) => Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v))
+            setAttrsForElement(connector, connectorAttrs)
+
+            const line = createElement('line')
+            const lineCoord = (c1, c2, index) => Math.max(0, c1[index] - c2[index])
+            const lineAttrs = {
+                x1: lineCoord(center1, center2, 0),
+                y1: lineCoord(center1, center2, 1),
+                x2: lineCoord(center2, center1, 0),
+                y2: lineCoord(center2, center1, 1),
+                stroke: 'dimgrey',
+            }
+            setAttrsForElement(line, lineAttrs)
+            connector.appendChild(line)
+            Object.entries({
+                position: 'absolute',
+                left: x + 'px',
+                top: y + 'px',
+                zIndex: -1,
+            }).forEach(([k, v]) => connector.style[k] = v)
+
+            return connector
+        }
+
+        const createBeeImage = type => {
+            const img = new Image
+            img.beeType = type
+            const beeSize = 24
+            img.src = 'bee-' + type + '.png'
+            img.width = beeSize
+            img.height = beeSize
+            img.style.margin = '10px'
+            return img
+        }
+
+        const createBeeFamily = (child, parents) => ({child, parents})
+        const male = 'male'
+        const female = 'female'
+        const generateNextBees = prev => prev.map(
+            bee => bee.beeType === male
+                                ? createBeeFamily(bee, [createBeeImage(female)])
+                                : createBeeFamily(bee, [createBeeImage(female), createBeeImage(male)])
+        )
+
+        const nextBees = (n, prevBees) => {
+            const nextBees = prevBees.length === 0 ? [createBeeFamily(null, createBeeImage(male))] : generateNextBees(prevBees)
+            const images = nextBees.flatMap(bees => bees.parents)
+            console.assert(n === images.length, 'Not a fibonacci seq')
+
+            const parentBlock = document.createElement('div')
+            images.forEach(img => parentBlock.appendChild(img))
+            beesBlock.appendChild(parentBlock)
+
+            nextBees.forEach(({child, parents}) => {
+                if (child === null) return
+                parents.map(p => connectElements(child, p)).forEach(connect => document.body.appendChild(connect))
+            })
+            return images
+        }
+
+        let lastBees = nextBees(fibGen.next().value, [])
+        beesBlock.onclick = () => lastBees = nextBees(fibGen.next().value, lastBees)
+    </script>
+</body>
+</html>
