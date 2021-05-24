@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 011</title>
+    <link rel="stylesheet" href="uikit.css">
+</head>
+<body class="uk-container uk-margin-top">
+    <h2>Рекурсия</h2>
+    <ul class="uk-list uk-list-bullet">
+        <li>Рекурсия означает вызов функции самой себя<br>
+            <code>const factorial = n => n === 0 ? 1 : n * factorial(n - 1)</code>
+        </li>
+        <li>Виды рекурсии<br>
+            <ul>
+                <li>Прямая рекурсия<br>
+                    <code>const a = () => a()</code>
+                </li>
+                <li>Косвенная рекурсия<br>
+                    <code>const a = () => b()</code><br>
+                    <code>const b = () => c()</code><br>
+                    <code>const c = () => a()</code>
+                </li>
+                <li>Хвостовая рекурсия<br>
+                    <code>const factorial = (n, acc = 1) => { if (n === 0) return acc ; return factorial(n - 1, acc * n) }</code>
+                </li>
+            </ul>
+        </li>
+    </ul>
+
+    <script>
+        const int = parseInt
+        const highLightShadow = '0 0 6px rgba(0, 0, 0, .3)'
+        const highLightBg = 'rgba(0, 0, 0, .05)'
+        const highLightAnimation = 'all .3s ease'
+
+        const styleSetter = (el, shadow, bg) => () => {
+            el.style.boxShadow = shadow
+            el.style.background = bg
+        }
+
+        const createElementsTree = (elements, parent) => elements.forEach(element => {
+            const li = document.createElement('li')
+            element.style.transition = highLightAnimation
+
+            const originalBg = element.style.background
+            const originalShadow = element.style.boxShadow
+            li.onmouseenter = styleSetter(element, highLightShadow, highLightBg)
+            li.onmouseleave = styleSetter(element, originalShadow, originalBg)
+
+            const nodeName = element.tagName.toLowerCase()
+            const {width, height} = element.getBoundingClientRect()
+            li.textContent = `${nodeName} [ ${int(width)} x ${int(height)} ]`
+            parent.appendChild(li)
+
+            const children = element.children
+            if (!children.length) return
+
+            const ul = document.createElement('ul')
+            li.appendChild(ul)
+            createElementsTree([...children], ul)
+        })
+
+        const list = document.createElement('ul')
+        list.classList.add('uk-text-meta', 'uk-list', 'uk-list-bullet')
+        createElementsTree([document.body], list)
+        document.body.appendChild(list)
+
+        const fib = n => n <= 1 ? 1 : fib(n - 1) + fib(n - 2)
+
+        console.assert(fib(0) === 1)
+        console.assert(fib(1) === 1)
+        console.assert(fib(2) === 2)
+        console.assert(fib(3) === 3)
+        console.assert(fib(4) === 5)
+        console.assert(fib(5) === 8)
+        console.assert(fib(6) === 13)
+    </script>
+</body>
+</html>
