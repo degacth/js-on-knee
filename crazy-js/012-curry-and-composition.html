@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 012</title>
+    <link rel="stylesheet" href="uikit.css">
+
+    <style>
+        #personsBlock {
+            position: relative;
+        }
+
+        .person-button {
+            position: absolute;
+            bottom: 50%;
+            transform: translate(50%, 50%);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 6px solid white;
+            font-size: 24px;
+            opacity: 0.8;
+            transition: all ease .3s;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+        }
+
+        .person-button:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="uk-container uk-margin-top">
+    <h2>Композиция и каррирование функций</h2>
+
+    <ul class="uk-list uk-list-bullet">
+        <li>
+            Каррирование - это возможность функции вызванной с недостающим количество аргументов
+            вернуть эту же функцию, но принимающую оставшиеся аргументы
+        </li>
+        <li>Каррированная функция будет выполнена только когда получит все аргументы
+            <ul class="uk-list uk-list-collapse">
+                <li><code>const addFunction = curry((a, b) => a + b)</code></li>
+                <li><code>addFunction(40, 2) === 42</code></li>
+                <li><code>addFunction(40)(2) === 42</code></li>
+                <li><code>const add10Function = add(10)</code></li>
+                <li><code>add10(40) === 50</code></li>
+            </ul>
+        </li>
+        <li>Композиция функций - это применение одной функции к результату другой функции
+            <ul class="uk-list uk-list-collapse">
+                <li><code>const add2 = n => n + 2 ; const mult2 = n => n * 2</code></li>
+                <li><code>add2(mult2(2)) === compose(add2, mult2)(2)</code></li>
+            </ul>
+        </li>
+    </ul>
+    <hr>
+    <div id="personsBlock">
+        <img src="cannibal-corpse.jpeg">
+    </div>
+    <div class="uk-flex uk-margin">
+        <div class="uk-width-2-3 uk-margin-right">
+            <h3><strong>У кого "А" занял деньги?</strong></h3>
+
+            Каждый из этих пяти занял деньги у другого и каждый дал другому взаймы.
+            Вам известно, что никто из них не дал в долг больше, чем одному человеку
+            и никто не занимал у того, кому он дал в долг.
+        </div>
+        <div class="uk-width-1-3">
+            <h4>Так же вы знаете следующее:</h4>
+            <ul class="uk-list uk-list-collapse uk-list-disc uk-list-primary">
+                <li>"В" взял деньги у "А"</li>
+                <li>"Е" не давал взаймы "А"</li>
+                <li>"С" дал взаймы "D"</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const curry = f => (...args) => {
+            if (args.length >= f.length) return f.apply(null, args)
+            return curry(f.bind(null, ...args))
+        }
+
+        const compose = (...funcs) => v => funcs.reverse().reduce((acc, f) => f(acc), v)
+        const eq = curry((a, b) => a === b)
+        const not = v => !v
+        const nth = curry((index, arr) => arr[index])
+        const first = nth(0)
+        const getter = curry((name, obj) => obj[name])
+        const exclude = curry((items, item) => items.filter(compose(not, eq(item))))
+
+        class Person {
+            name = null
+            lend = null
+            _borrow = null
+
+            constructor(name) {
+                this.name = name
+            }
+
+            get borrow() {
+                return this._borrow
+            }
+
+            set borrow(person) {
+                this._borrow = person
+                person.lend = this
+            }
+        }
+
+        const canApplyDeal = curry((p1, p2) => {
+            if (p1 === p2) return false
+            if (p1.lend === p2) return false
+            if (p1.borrow === p2) return false
+            return true
+        })
+
+        const findWho = curry((what, persons, person) => persons.filter(canApplyDeal(person)).filter(what))
+        const findWhoNeverToLendFor = findWho(p => !p.lend)
+        const findWhoNeverBorrowedFor = findWho(compose(not, getter('borrow')))
+
+        const persons = 'ABCDE'.split('').map(name => new Person(name))
+        const [A, B, C, D, E] = persons
+        const excludePerson = exclude(persons)
+
+        B.borrow = A
+        D.borrow = C
+
+        const neverBorrowedFromE = first(findWhoNeverBorrowedFor(excludePerson(A), E))
+        neverBorrowedFromE.borrow = E
+
+        const neverLendForA = first(findWhoNeverToLendFor(persons, A))
+        A.borrow = neverLendForA
+
+        const buttonsColors = ['LightSalmon', 'Orange', 'Plum', 'SteelBlue']
+        const colorsGen = (function* () {let color = 0 ; while (true) yield buttonsColors[++color % buttonsColors.length]})()
+        persons.forEach((p, index) => {
+            const btn = document.createElement('button')
+            btn.textContent = p.name
+            btn.classList.add('person-button')
+            btn.style.left = ((100 / persons.length) * index) + '%'
+            btn.style.background = colorsGen.next().value
+            personsBlock.appendChild(btn)
+            btn.onclick = () => {
+                const isRightPerson = p === A.borrow
+                btn.style.boxShadow = '0 0 30px ' + (isRightPerson ? 'rgba(0, 255, 255, .9)' : 'rgba(255, 0, 0, .9)')
+                btn.style.opacity = 1
+            }
+        })
+
+        const adder = curry((a, b, c) => a + b + c)
+        const mult = curry((a, b) => a * b)
+        const adder20mult30 = compose(adder(5, 15), mult(30))
+        const assert = (act, exp) => console.assert(act === exp, `Assertion failed: ${act} !== ${exp}`)
+
+        assert(adder(1, 2, 3), 6)
+        assert(adder(1)(2)(3), 6)
+        assert(adder(1, 2)(3), 6)
+        assert(adder20mult30(50), 1520)
+    </script>
+</body>
+</html>
