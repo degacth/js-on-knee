@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 013</title>
+    <link rel="stylesheet" href="uikit.css">
+
+    <style>
+        #banner {
+            font-size: 0;
+            line-height: 0;
+        }
+
+        #wrapper {
+            border: 0 solid steelblue;
+            width: 0;
+            height: 0;
+            display: inline-block;
+        }
+
+        #wrapper img {
+            opacity: 0;
+        }
+
+        .animated {
+            transition: all 1s;
+            transition-property: width, height, opacity;
+        }
+    </style>
+</head>
+
+<body class="uk-container uk-margin-top">
+    <div id="infoContainer">
+        <h2>Основы асинхронного выполнения JS</h2>
+        <ul class="uk-list uk-list-bullet">
+            <li>Вам не нужно держать 1000 умных слов в голове, чтобы что-то уметь</li>
+            <li><strong>Стек вызовов</strong> <i>(call stack)</i>
+                <ul>
+                    <li><code>a(b(c()))</code> размер стека вызовов === 3</li>
+                    <li><code>const a = () => a() ; a()</code> переполнение стека вызовов вызывает ошибку</li>
+                </ul>
+            </li>
+            <li><strong>Очередь задач</strong> <i>(tasks queue)</i>
+                <ul>
+                    <li><code>setTimeout(runAfterSecond, 1000)</code><br>
+                        через секунду в очереди задачь появится функция "runAfterSecond"
+                    </li>
+                    <li><code>const img = new Image() ; img.src = 'http://some-images-host/cat.png' ; img.onload = showImage</code><br>
+                        после загрузки картинки в очереди задач появится функция "showImage"
+                    </li>
+                    <li><code>document.onclick = countClicks</code><br>
+                        после клика на "document" в очередь задач попадёт фукнция "countClicks"
+                    </li>
+                </ul>
+            </li>
+            <li><strong>Цикл событий</strong> <i>(event loop)</i> отслеживает в цикле появление новых событий из
+                "очереди задач"
+                <ul>
+                    <li>и при наличии задач отправляет их на исполнение (вызывает функцию)</li>
+                    <li>пока стек вызовов не будет опусташён - новые задачи не будут выполнены</li>
+                </ul>
+            </li>
+        </ul>
+
+        <button id="showBanner" class="uk-button uk-button-primary">show banner</button>
+    </div>
+
+    <div id="banner" class="uk-text-center">
+        <span id="wrapper" class="animated"></span>
+    </div>
+
+    <script>
+        const path = 'cannibal-corpse.jpeg'
+
+        showBanner.onclick = () => {
+            const img = new Image()
+            img.src = path
+            img.classList.add('animated')
+            infoContainer.hidden = true
+
+            img.onload = () => {
+                const parentWidth = wrapper.parentElement.clientWidth
+                const borderWidth = 3
+                const doubleBorder = borderWidth * 2
+                wrapper.style.borderWidth = borderWidth + 'px'
+                wrapper.style.width = Math.min(img.width, parentWidth) - doubleBorder + 'px'
+
+                wrapper.ontransitionend = () => {
+                    wrapper.appendChild(img)
+                    wrapper.style.height = img.height + 'px'
+
+                    wrapper.ontransitionend = () => {
+                        img.style.opacity = 1
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
