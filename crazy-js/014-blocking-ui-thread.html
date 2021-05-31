@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 014</title>
+    <link rel="stylesheet" href="uikit.css">
+</head>
+<body class="uk-container uk-margin-top">
+    <h2>Блокировка пользовательского потока выполнения</h2>
+    <ul class="uk-list uk-list-bullet">
+        <li>Даже незначительная блокировка пользовательского интерфейса может вызывать:
+            <ul>
+                <li>Чувство негодования пользователя</li>
+                <li>Отказ от использования приложения</li>
+                <li>Голодная смерь программиста</li>
+            </ul>
+        </li>
+        <li>Причины блокировки
+            <ul>
+                <li>Преобразование большого объёма данных к другому виду</li>
+                <li>Затратная вычислительная операция</li>
+                <li>Вызов блокирующей функции</li>
+            </ul>
+        </li>
+        <li>Способы борьбы с блокироваками
+            <ul>
+                <li>Асинхронная обработка данных или вычислительной операции</li>
+                <li>Отказ от использования блокирующих функций</li>
+            </ul>
+        </li>
+    </ul>
+
+    <div class="uk-width-1-3">
+        <input type="number" id="num" class="uk-input uk-width-1-3" min="0"> => fib => <span id="result"></span>
+    </div>
+
+    <script>
+        const async = f => (...args) => new Promise(resolve => setTimeout(() => {
+            resolve(f.apply(null, args))
+        }, 0))
+
+        const fib = async(n => {
+            if (n <= 1) return Promise.resolve(1)
+            return fib(n - 1)
+                .then(n1 => fib(n - 2)
+                .then(n2 => n1 + n2))
+        })
+
+        num.onchange = () => {
+            result.textContent = '???'
+            const fibNumber = parseInt(num.value)
+            if (!fibNumber) result.textContent = 'wrong number'
+            fib(fibNumber).then(n => result.textContent = n)
+        }
+
+        const after = (f, timeout) => null
+
+        let testNumber = 0
+        const asyncDouble = after(n => n * 2, 100)
+        asyncDouble(4).then(n => testNumber = n)
+
+        setTimeout(() => {
+            console.assert(testNumber === 8, 'implement after function')
+        }, 500)
+    </script>
+</body>
+</html>
