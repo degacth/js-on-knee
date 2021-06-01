@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 015</title>
+    <link rel="stylesheet" href="uikit.css">
+</head>
+<body class="uk-container uk-margin-top">
+    <h2>Обработка ошибок при работе с Promise</h2>
+    <ul class="uk-list uk-list-bullet">
+        <li>Для обработки ошибок в JavaScript используется конструкция<br>
+            <code>try { someDangerFunction() } catch (e) { console.error('Error :' + e) }</code>
+        </li>
+        <li>"try" не сработает для функций из другого стека вызовов<br>
+            <code>try { delayDangerFunction() } catch (e) { console.error('Never happend') }</code>
+        </li>
+        <li>Для обработки ошибок в асинхронном коде часто прибегают к Promise<br>
+            <code>someDangerPromiseFunction().then(data => storage = read(data)).catch(e => storage = defaultData)</code>
+        </li>
+    </ul>
+
+    <datalist id="images">
+        <option value="bee-female.png" />
+        <option value="bee-male.png" />
+        <option value="cannibal-corpse.jpeg" />
+        <option value="https://loremflickr.com/800/600" />
+        <option value="https://loremfaker.com/-320/-240" />
+        <option value="https://picsummatra.com/no/such/url" />
+        <option value="https://picsum.photos/200/300" />
+    </datalist>
+
+    <div class="uk-flex">
+        <form id="searchForm" class="uk-width-1-1">
+            <input type="search" id="query" list="images" class="uk-input uk-width-2-5" autocomplete="off">
+            <button class="uk-button uk-button-primary uk-width-1-6">load info</button>
+            <div class="uk-text-meta uk-width-2-5 uk-text-center uk-margin-small" id="resultInfo">введите адрес изображения</div>
+        </form>
+    </div>
+
+    <script>
+        const loadImage = path => new Promise((resolve, reject) => {
+            const image = new Image()
+            image.onload = () => resolve(image)
+            image.onerror = e => reject(e)
+            image.src = path
+        })
+
+        searchForm.onsubmit = event => {
+            event.preventDefault()
+            resultInfo.textContent = '... loading'
+
+            loadImage(query.value)
+                .then(loadedImage => {
+                    resultInfo.textContent = `[ ${loadedImage.width} x ${loadedImage.height} ]`
+                })
+                .catch(e => {
+                    resultInfo.textContent = 'can`t load image'
+                })
+        }
+
+        const validJSON = '{"foo": "bar"}'
+        const invalidJSON = '{hello: world}'
+        const defaultData = {fizz: 'bazz'}
+        const readJSONAsync = data => JSON.parse(data) // Implement as async
+
+        let actual = null
+        readJSONAsync(validJSON)
+            .then(data => actual = data)
+            .finally(() => console.assert(actual.foo === 'bar', 'implement json parsing'))
+
+        let actual2 = null
+        readJSONAsync(invalidJSON)
+            .then(data => actual2 = data)
+            .catch(e => actual2 = defaultData)
+            .finally(() => console.assert(actual2 === defaultData, 'implement error handling'))
+    </script>
+</body>
+</html>
