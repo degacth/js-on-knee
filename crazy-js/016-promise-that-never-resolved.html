@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 16</title>
+    <link rel="stylesheet" href="uikit.css">
+</head>
+<body class="uk-container uk-margin-top">
+    <h2>Promise который никогда не выполнится</h2>
+    <ul class="uk-list uk-list-bullet">
+        <li><code>new Promise(resolve => console.log('do nothing')).then(v => console.log('never called'))</code><br>
+            Если не будет вызвана функция resolve, то не будет вызван callback переданный в then
+        </li>
+        <li><code>new Promise((resolve, reject) => console.log('do nothing')).finally(() => console.log('never called'))</code><br>
+            Если не будет вызвана функция resolve или reject, то не будет вызван callback переданный в finally
+        </li>
+    </ul>
+
+    <div id="imageBlock" class="uk-width-1-5">
+        <img src="bee-female.png" class="uk-margin">
+        <button id="remove" class="uk-button uk-button-danger uk-width-1-1">Удалить</button>
+        <div id="confirmBlock" class="uk-button-group uk-width-1-1 uk-hidden">
+            <button id="confirmed" class="uk-button uk-button-danger uk-width-1-2"></button>
+            <button id="cancel" class="uk-button uk-button-primary uk-width-1-2">Отмена</button>
+        </div>
+    </div>
+
+    <script>
+        const hiddenCls = 'uk-hidden'
+        const showHideElements = (showElement, hideElement) => () => {
+            showElement.classList.remove(hiddenCls)
+            hideElement.classList.add(hiddenCls)
+        }
+        const showConfirmation = showHideElements(confirmBlock, remove)
+        const hideConfirmation = showHideElements(remove, confirmBlock)
+        const removeImageBlock = () => {
+            imageBlock.classList.add('uk-animation-scale-up', 'uk-animation-reverse')
+            imageBlock.ontransitionend = () => document.body.removeChild(imageBlock)
+        }
+
+        const cancelableAfter = (f, timeout) => {
+            let timeoutId = null
+            const promise = new Promise(resolve => {
+                timeoutId = setTimeout(() => resolve(f()), timeout)
+            })
+
+            return [timeoutId, promise]
+        }
+
+        const activateConfirmation = () => {
+            showConfirmation()
+            confirmed.disabled = true
+            const maxTimeout = 3
+
+            const cancelablePromises = new Array(maxTimeout + 1)
+                .fill(null)
+                .map((_, index) => cancelableAfter(() => {
+                    confirmed.textContent = maxTimeout - index
+                }, index * 1000))
+
+            Promise.all( cancelablePromises.map(([_, promise]) => promise))
+                .then(() => {
+                    confirmed.textContent = 'Удалить'
+                    confirmed.disabled = false
+                    confirmed.onclick = removeImageBlock
+                })
+
+            cancel.onclick = () => {
+                cancelablePromises.forEach(([timeoutId]) => clearTimeout(timeoutId))
+                confirmed.onclick = null
+                hideConfirmation()
+            }
+        }
+
+        remove.onclick = activateConfirmation
+
+        const loadImageSize = path => null
+
+        let actualArea = null
+        let expectedArea = 524288
+        Promise.all([
+            loadImageSize('bee-female.png'),
+            loadImageSize('bee-male.png'),
+        ])
+            .then(sizes => actualArea = sizes.map(([width, height]) => width * height).reduce((acc, item) => acc + item))
+            .finally(() => console.assert(actualArea === expectedArea, 'implement image size loading'))
+    </script>
+</body>
+</html>
