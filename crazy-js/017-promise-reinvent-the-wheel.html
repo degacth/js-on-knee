@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 016</title>
+    <link rel="stylesheet" href="uikit.css">
+</head>
+<body class="uk-container uk-margin-top">
+    <h2>Promise API</h2>
+    <ul class="uk-list uk-list-bullet">
+        <li><code>new Promise(someHandler)</code><br>
+            "someHandler" - будет выполнен синхронно (в том же стеке вызовов)
+        </li>
+        <li><code>new Promise(someHandler).then(someResultHandler).catch(someErrorHandler)</code><br>
+            "someResultHandler", "someErrorHandler" - будут выполнены асинхронно (поставлены в очередь задач и вызваны в другом стеке вызовов)
+        </li>
+        <li><code>new Promise(res => res(1 + 2)).then(n => n * 3).then(n => n * 4).then(value => value === 36)</code><br>
+            "then" - может быть вызван многократно в виде цепочки вызовов
+        </li>
+        <li>Статические методы Promise
+            <ul class="uk-list uk-list-circle uk-list-divider">
+                <li><code>Promise.resolve(someValue).then(value => value === someValue).catch(neverCalledFunction)</code></li>
+                <li><code>Promise.reject(new Error('danger')).then(neverCalledFunction).catch(errorHandler)</code></li>
+                <li><code>Promise.all([Promise.resolve('hello'), Promise.resolve('world')]).then(values => values.join(', '))
+                    <br>.then(value => value === 'hello, world')</code></li>
+                <li><code>Promise.race([Promise.resolve('hello'), Promise.resolve('world')]).then(firstResolvedValue => firstResolvedValue + '!')
+                    <br>.then(value => value === 'hello!')</code></li>
+            </ul>
+        </li>
+    </ul>
+
+    <script>
+        !function() {
+            class Promise {
+                static resolve(v) {
+                    return new Promise(resolver => resolver(v))
+                }
+
+                static all(promises) {
+                    return new Promise((resolve, reject) => {
+                        const results = new Array(promises.length)
+                        let counter = 0
+                        const checkFinished = length => length === promises.length && resolve(results)
+
+                        promises.forEach((promise, index) => {
+                            promise
+                                .then(v => {
+                                    results[index] = v
+                                    counter++
+                                    checkFinished(counter)
+                                })
+                                .catch(error => reject(error))
+                        })
+                    })
+                }
+
+                delay = f => setTimeout(f, 0)
+                noop = () => undefined
+                onResolved = this.noop
+                onFinal = this.noop
+
+                resolver = v => {
+                    this.delay(() => {
+                        this.onResolved(v)
+                        this.onFinal()
+                    })
+                }
+
+                constructor(handler) {
+                    try {
+                        handler(this.resolver)
+                    }
+                    catch (error) {
+                        console.error(error)
+                    }
+                }
+
+                then(callback) {
+                    this.onResolved = callback
+                    return this
+                }
+
+                catch() {
+                }
+
+                finally(callback) {
+                    this.onFinal = callback
+                    return this
+                }
+            }
+
+            let test1 = null
+            const expect1 = true
+            new Promise(() => test1 = true)
+            console.assert(test1 === expect1, 'implement promise handling sync')
+
+            let test2 = null
+            const expect2 = 10
+            Promise
+                .resolve(expect2)
+                .then(v => test2 = v)
+                .finally(() => console.assert(test2 === expect2, 'implement basic promise'))
+
+            let test3 = null
+            let expect3 = '1, 2, 3'
+            Promise.all([
+                Promise.resolve(1),
+                Promise.resolve(2),
+                Promise.resolve(3),
+            ])
+                .then(results => test3 = results.join(', '))
+                .finally(() => console.assert(test3 === expect3, 'implement Promise.all'))
+
+            let test4 = null
+            const defaultValue = 42
+            const error = new Error('oh, no')
+            Promise
+                .reject(error)
+                .catch(e => test4 = defaultValue)
+                .finally(() => console.assert(test4 === defaultValue, 'implement error handling promise'))
+
+            let test5 = null
+            Promise.all([
+                Promise.resolve('foo'),
+                Promise.resolve('bar'),
+                Promise.reject(error),
+            ])
+                .catch(e => test5 = e)
+                .finally(() => console.assert(test5 === error, 'implement Promise.all error handling'))
+        }()
+    </script>
+</body>
+
+</html>
