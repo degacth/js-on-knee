@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 018</title>
+    <link rel="stylesheet" href="uikit.css">
+</head>
+<body class="uk-container uk-margin-top">
+    <h2>Синтаксический сахар для Promise - <strong>async / await</strong></h2>
+
+    <ul class="uk-list uk-list-bullet">
+        <li><code>const delay = async timeout => await sleep(timeout)</code><br>
+            Если функция использует оператор "await", она должна быть объявлена с ключевым словом "async"
+        </li>
+        <li><code>const value = <strong>await</strong> someAsyncFunction()</code> =>
+            <code>someAsyncFunction().then(v => value = v)</code>
+        </li>
+        <li><code>const someAsyncFunction = <strong>async</strong> () => 1</code> =>
+            <code>const someAsyncFunction = () => Promise.resolve(1)</code>
+        </li>
+    </ul>
+
+    <div class="uk-flex">
+        <div class="uk-width-1-2">
+            <h4>Тест "Числовая последовательность"</h4>
+            <p class="uk-text-met">
+                В тесте на числовую последовательность необходимо определить характер последовательности
+            </p>
+            <ul>
+                <li>Числа могут распологаться в прогрессирующем или регрессирующем порядке</li>
+                <li>В некоторых случаях числа в одной последовательности могут идти как
+                    по возрастающей, так и по убывающей
+                </li>
+                <li>А в некоторых случаях две различные последовательности могут быть
+                    взаимосвязаны
+                </li>
+            </ul>
+            <p>
+                <strong>
+                    Вам следует определить, с каким из случаев вы имеете дело,
+                    а затем продолжить последовательность, вставив соответствующее число
+                    или числа (разделённые пробелом)
+                </strong>
+            </p>
+            <button id="startTest" class="uk-button uk-button-primary uk-width-1-3">Начать тест</button>
+        </div>
+        <div class="uk-width-1-2">
+            <form id="answerForm" hidden>
+                <div class="uk-width-1-2"><strong id="taskIndexLabel"></strong></div>
+                <p id="sequenceLabel"></p>
+                <input type="text" id="answerControl" pattern="[\d,. -]+" required class="uk-input uk-width-2-3"
+                    placeholder="введите ответ" autocomplete="off">
+                <button id="answerButton" class="uk-button uk-button-primary">ответить</button>
+            </form>
+            <div id="resultsBlock" hidden>
+                <h4>Результат теста:</h4>
+                <ul class="uk-list uk-list-circle" id="testResultsList">
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const IQTests = [
+            [[0, 1, 2, 3, 5, 7, 9, 12, 15, 18], [22]],
+            [[3, 6, 12, 21, 33], [48]],
+            [[1000, 975, 925, 850, 750], [null]],
+            [[1, 10, 2.5, 7.5, 4, 5], [null, null]],
+            [[12, 8.5, 5, 1.5], [null]],
+
+            [[8, 16, 64, 128, 512, 1024], [null]],
+            [[12, 11, 9, 6, 2], [null]],
+            [[1, 1.5, 3, 7.5, 22.5], [null]],
+            [[2, 6, 9, 27, 30, 90, 93], [null]],
+            [[5, 6, 7, 8, 10, 12, 14, 20], [null, null]],
+
+            [[100, 99, 96, 91, 84, 75, 64], [null]],
+            [[19, 38, 57, 76, 95, 114], [null]],
+            [[2, 5, 12, 27, 58, 121], [null]],
+            [[10, 9.75, 9.25, 8.5, 7.5, 6.25], [null]],
+            [[10, 11.75, 9.25, 11, 8.5], [null]],
+        ]
+
+        const showTask = (task, len, index) => {
+            const parts = [... task.seq, ... new Array(task.answer.length).fill('?')]
+            sequenceLabel.textContent = parts.join(', ')
+            taskIndexLabel.textContent = `Задание ${index + 1} / ${len}`
+        }
+
+        const resetTask = () => {
+            answerControl.value = ''
+            checkAnswerValidity()
+        }
+
+        const userAnswer = () => new Promise(resolve => {
+            const form = answerForm
+            form.onsubmit = event => {
+                event.preventDefault()
+                const answers = answerControl.value
+                    .replace(',', '.')
+                    .split(/\s+/ig)
+                    .map(Number)
+
+                resolve(answers)
+            }
+        })
+
+        const initTest = () => answerForm.hidden = false
+        const finishTest = () => answerForm.hidden = true
+
+        const runTest = async tasks => {
+            initTest()
+            const userResults = []
+            const tasksModels = tasks.map(([seq, answer]) => ({seq, answer}))
+
+            for (let i = 0; i < tasksModels.length; i++) {
+                const task = tasksModels[i]
+                showTask(task, tasksModels.length, i)
+                const answer = await userAnswer()
+                const actual = task.answer
+                userResults[i] = { answer, actual }
+                resetTask()
+            }
+
+            finishTest()
+            return userResults
+        }
+
+        const getCssClassByLevel = level => [
+            'uk-text-danger',
+            'uk-text-warning',
+            'uk-text-primary',
+            'uk-text-success',
+        ][level]
+
+        const getResultLabelAndLevel = points => {
+            if (points <= 2) return ['Умственная отсталость', 0]
+            if (points <= 4) return ['Очень низкий уровень', 0]
+            if (points <= 6) return ['Низкий уровень', 1]
+            if (points <= 7) return ['Уровень ниже среднего', 1]
+            if (points <= 9) return ['Средний уровень', 2]
+            if (points <= 10) return ['Профессионал. Высокий уровень', 3]
+            if (points <= 12) return ['Эксперт', 3]
+            if (points <= 13) return ['Высококвалифицированный специалист', 3]
+            return ['Гений', 3]
+        }
+
+        const showResults = results => {
+            const arrayEquals = ([arr1, arr2]) =>
+                arr1.length === arr2.length
+                && arr1.every((value, index) => value === arr2[index])
+
+            const rightAnswerCount = results
+                .map(({answer, actual}) => [answer, actual])
+                .filter(arrayEquals)
+                .length
+
+            const [label, level] = getResultLabelAndLevel(rightAnswerCount)
+            resultsBlock.hidden = false
+            testResultsList.innerHTML = `
+                <li class="${getCssClassByLevel(level)}">${label}</li> 
+                <li>Выполнено: ${rightAnswerCount} / ${results.length}</li> 
+            `
+        }
+
+        startTest.onclick = async () => {
+            startTest.onclick = null
+            startTest.classList.add('uk-animation-scale-up', 'uk-animation-reverse')
+            startTest.ontransitionend = () => startTest.hidden = true
+            const results = await runTest(IQTests)
+            showResults(results)
+        }
+
+        const checkAnswerValidity = () => answerButton.disabled = !answerForm.checkValidity()
+        answerControl.oninput = checkAnswerValidity
+        checkAnswerValidity()
+    </script>
+</body>
+</html>
