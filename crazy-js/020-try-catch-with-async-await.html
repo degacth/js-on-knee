@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" class="uk-height-1-1">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 020</title>
+    <link rel="stylesheet" href="uikit.css">
+    <style>
+        .placeholder {
+            position: fixed;
+            border: 2px dotted tomato;
+            background-color: rgba(255, 255, 255, 0.3)
+        }
+
+        body {
+            user-select: none;
+        }
+    </style>
+</head>
+<body class="uk-overflow-hidden uk-height-1-1">
+    <div class="uk-container">
+        <h2 class="uk-margin-top">Классическая обработка ошибок в асинхронном коде</h2>
+        <ul class="uk-list uk-list-bullet uk-list-large">
+            <li>Как известно конструкция try / catch не способна перехватывать ошибки асинхронного выполнения
+                <code>try { loadImage(path).then(image => show(image)) } catch (e) { console.error('Never happend') }</code>
+            </li>
+            <li>
+                Но в случае если функция использующая конструкцию try / catch, получает данные с использованием await,<br>
+                тогда ошибки, даже в случае асинхронных вызовов, будут перехвачены, так же как и при синхронных вызовах<br>
+                <code>try { show(await loadImage(path)) } catch (e) { console.error('Image not loaded', e) }</code>
+            </li>
+        </ul>
+    </div>
+    <script>
+        /**
+         * Домашнее задание
+         * доработать функция "createImagePlaceholder", что бы она вместо minSize, принимала minWidth, minHeight
+         * и если какой-то из размеров меньше соответствующего минимума, то так же выбрасывать ошибку,
+         * но уже нужно указать какой из размеров не соответствует требованиям, или оба размера не соответствующие
+         */
+        const createImagePlaceholder = (container, minSize) => new Promise((resolve, reject) => {
+            let placeholder = null
+            let initCoords = null
+            const minMax = (a, b) => [Math.min(a, b), Math.max(a, b)]
+            const toPx = v => v + 'px'
+
+            container.onmousedown = event => {
+                if (placeholder) return
+                initCoords = {x: event.clientX, y: event.clientY}
+                placeholder = document.createElement('div')
+                placeholder.classList.add('placeholder')
+                container.appendChild(placeholder)
+            }
+
+            container.onmousemove = event => {
+                if (!placeholder) return
+                const {clientX, clientY} = event
+                const {x, y} = initCoords
+                const [left, right] = minMax(clientX, x)
+                const [top, bottom] = minMax(clientY, y)
+
+                placeholder.style.left = toPx(left)
+                placeholder.style.top = toPx(top)
+                placeholder.style.width = toPx(right - left)
+                placeholder.style.height = toPx(bottom - top)
+            }
+
+            container.onmouseup = () => {
+                if (!placeholder) return
+                container.onmousedown = null
+                container.onmousemove = null
+                container.onmouseup = null
+
+                const {width, height} = placeholder.getBoundingClientRect()
+                if (width < minSize || height < minSize) {
+                    reject(new Error('Size is less then needed'))
+                    return container.removeChild(placeholder)
+                }
+
+                resolve(placeholder)
+            }
+        })
+
+        const loadImageToPlaceholder = (placeholder, index) => {
+            const int = parseInt
+            const {width, height} = placeholder.getBoundingClientRect()
+            const path = `https://loremflickr.com/${int(width)}/${int(height)}?random=${index + 1}`
+            const image = new Image()
+            image.onload = () => {
+                image.classList.add('uk-animation-scale-down')
+                placeholder.appendChild(image)
+            }
+            image.src = path
+        }
+
+        !async function () {
+            const maxPlaceholders = 3
+            const minSize = 200
+            const placeholders = []
+
+            while (placeholders.length < maxPlaceholders) {
+                try {
+                    placeholders.push(await createImagePlaceholder(document.body, minSize))
+                }
+                catch (e) {
+                    console.error('placeholder creation error', e)
+                }
+            }
+
+            placeholders.forEach(loadImageToPlaceholder)
+        }()
+    </script>
+</body>
+</html>
