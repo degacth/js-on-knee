@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" class="uk-height-1-1">
+<head class="uk-height-1-1">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 020</title>
+    <link rel="stylesheet" href="uikit.css">
+    <style>
+        #adBlock img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: all 1s;
+            box-shadow: 0 0 20px 10px rgba(0, 0, 0, .5);
+            border: 1px solid white;
+        }
+    </style>
+</head>
+<body class="uk-height-1-1 uk-container">
+    <div id="infoBlock">
+        <h2 class="uk-margin-top">Промиссификация, последовательное и параллельное выполнение</h2>
+        <ul class="uk-list uk-list-bullet">
+            <li>
+                За долго до появления класса <code>Promise</code> событийная модель JavaScript была ориентированна<br>
+                на функции обратных вызовов (callback) <code>document.onclick = someCallbackFunction</code>
+            </li>
+            <li>
+                Ввиду перехода на использование конструкции <strong>async / await</strong> которые работают<br>
+                исключительно с объектами Promise, появилась необходимость <strong><i>промиссифицировать</i></strong><br>
+                более поздний подход работы через "callback"<br>
+                <code>const onClick = element => new Promise(callback => el.onclick = callback)</code><br>
+                <code>await onClick(document.body)</code>
+            </li>
+            <li>Часто программисты пишут async / await последовательный код:<br>
+                <code>const images = [await loadImage(path1), await loadImage(path2)]</code>
+            </li>
+            <li>Хотя загрузку данных можно распараллелить:<br>
+                <code>const images = await Promise.all([loadImage(path1), loadImage(path2)])</code>
+            </li>
+        </ul>
+        <button class="uk-button uk-button-primary" id="showAdBtn">Show ad</button>
+    </div>
+
+    <div class="uk-height-1-1 uk-position-relative" id="adBlock" hidden></div>
+
+    <script>
+        const loadImage = path => new Promise((resolve, reject) => {
+            const image = new Image()
+            image.onload = () => resolve(image)
+            image.onerror = e => reject(e)
+            image.src = path
+        })
+
+        const transitionEnd = el => new Promise(resolve => el.ontransitionend = resolve)
+        const clicked = el => new Promise(resolve => el.onclick = resolve).then(() => el.onclick = null)
+        const addElementDeferred = parent => (el, timeout = 50) =>
+            new Promise(resolve => parent.appendChild(el) && setTimeout(resolve, timeout))
+
+        const showAd = async container => {
+            const maxImages = 3
+            const {clientWidth, clientHeight} = container
+            const createPath = (w, h, index) => `https://loremflickr.com/${w}/${h}?random=${index}`
+            const whenChildAdded = addElementDeferred(container)
+            const addImage = async image => {
+                await whenChildAdded(image)
+                image.style.opacity = 1
+                await transitionEnd(image)
+            }
+
+            const getFactor = index => (maxImages - index) / (maxImages + 1)
+            const changeSize = (size, factor) => parseInt(size * factor)
+
+            /* serial loading
+            for (let i = 0; i < maxImages; i++) {
+                const path = createPath(
+                    changeSize(clientWidth, getFactor(i)),
+                    changeSize(clientHeight, getFactor(i)),
+                    i + 1
+                )
+
+                await addImage(await loadImage(path))
+            }
+            */
+
+            const imagePromises = new Array(maxImages)
+                .fill(null)
+                .map((_, i) => loadImage(createPath(
+                    changeSize(clientWidth, getFactor(i)),
+                    changeSize(clientHeight, getFactor(i)),
+                    i + 1
+                )))
+
+            const images = await Promise.all(imagePromises)
+            for (let i = 0; i < images.length; i++) await addImage(images[i])
+
+            // await sleep(2000)
+            await clicked(document.body)
+
+            const children = container.children
+            for (let i = children.length - 1; i >= 0; i--) {
+                const image = children[i]
+                image.style.opacity = 0
+                await transitionEnd(image)
+            }
+        }
+
+        showAdBtn.onclick = async () => {
+            infoBlock.classList.add('uk-animation-slide-left-medium', 'uk-animation-reverse')
+            await transitionEnd(infoBlock)
+            infoBlock.hidden = true
+            adBlock.hidden = false
+            showAd(adBlock)
+        }
+    </script>
+</body>
+</html>
