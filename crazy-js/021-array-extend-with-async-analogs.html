@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson 021</title>
+    <link rel="shortcut icon" type="image/png" href="jasmine/lib/jasmine-3.7.1/jasmine_favicon.png">
+    <link rel="stylesheet" href="jasmine/lib/jasmine-3.7.1/jasmine.css">
+    <link rel="stylesheet" href="uikit.css">
+
+    <script src="jasmine/lib/jasmine-3.7.1/jasmine.js"></script>
+    <script src="jasmine/lib/jasmine-3.7.1/jasmine-html.js"></script>
+    <script src="jasmine/lib/jasmine-3.7.1/boot.js"></script>
+</head>
+<body class="uk-container uk-margin-top">
+    <h2>Расширение методов массива асинхронными аналогами</h2>
+    <script>
+        const fibAsync = async n => n <= 1 ? 1: await fibAsync(n - 2) + await fibAsync(n - 1)
+
+        Array.prototype.forEachAsync = async function(asyncCallback) {
+            for (let i = 0; i < this.length; i++) await asyncCallback(this[i])
+        }
+
+        Array.prototype.mapAsync = async function(asyncCallback) {
+            const result = []
+            for (let i = 0; i < this.length; i++) result.push(await asyncCallback(this[i]))
+            return result
+        }
+
+        Array.prototype.filterAsync = async function(asyncCallback) {
+            const result = []
+            for (let i = 0; i < this.length; i++) if (await asyncCallback(this[i])) result.push(this[i])
+            return result
+        }
+
+        describe('Array async implementation', () => {
+            let testNumbers = null
+
+            beforeEach(() => {
+                testNumbers = [0, 1, 2, 3, 4, 5]
+                //            [1, 1, 2, 3, 5, 8]
+            })
+
+            xit('should sum all fib numbers', () => {
+                let actual = 0
+                testNumbers.forEach(async n => actual += await fibAsync(n))
+                expect(actual).toBe(20)
+            })
+
+            it('should async sum all fib numbers', async () => {
+                let actual = 0
+                await testNumbers.forEachAsync(async n => actual += await fibAsync(n))
+                expect(actual).toBe(20)
+            })
+
+            xit('should map fib numbers with square', () => {
+                const actual = testNumbers.map(async n => Math.pow(await fibAsync(n), 2))
+                expect(actual).toEqual([1, 1, 4, 9, 25, 64])
+            })
+
+            it('should async map fib numbers with square', async () => {
+                const actual = await testNumbers.mapAsync(async n => Math.pow(await fibAsync(n), 2))
+                expect(actual).toEqual([1, 1, 4, 9, 25, 64])
+            })
+
+            xit('should filter even numbers', () => {
+                const actual = testNumbers.filter(async n => await fibAsync(n) % 2 === 0)
+                expect(actual).toEqual([2, 5])
+            })
+
+            it('should async filter even numbers', async () => {
+                const actual = await testNumbers.filterAsync(async n => await fibAsync(n) % 2 === 0)
+                expect(actual).toEqual([2, 5])
+            })
+
+            it('should combine map and filter', async () => {
+                const actual = await testNumbers
+                    .mapAsync(n => fibAsync(n))
+                    .then(arr => arr.filterAsync(n => n % 2 === 0))
+
+                expect(actual).toEqual([2, 8])
+            })
+
+            it('should check that array has number greater then N', async () => {
+                const N = 999
+                const actual = await testNumbers.someAsync(async n => await fibAsync(n) > N)
+                expect(actual).toBeFalse()
+            })
+        })
+    </script>
+</body>
+</html>
