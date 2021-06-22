@@ -17,7 +17,8 @@
 * JavaScript основы. VueJS https://www.youtube.com/watch?v=KGAOLo1YQkA&list=PLIF-DGMqHXLbfiYsK7aVWRByBAcf1kl03
 * Практика JavaScript VueJS UIKit. Календарь задач https://www.youtube.com/watch?v=BeL4c2XUJNE&list=PLIF-DGMqHXLaNkKUdBbes6098R3YCLQa-
 
-### Crazy JS (расшириный курс)
-* Crazy JavaScript полный спискок https://www.youtube.com/watch?v=UcqB7li-PR4&list=PLIF-DGMqHXLbJVI6FNvkp59rPoJPPY3zl
+### Crazy JS (расширенный курс)
+* Crazy JavaScript полный список https://www.youtube.com/watch?v=UcqB7li-PR4&list=PLIF-DGMqHXLbJVI6FNvkp59rPoJPPY3zl
 * Crazy JS Функции https://www.youtube.com/watch?v=UcqB7li-PR4&list=PLIF-DGMqHXLZx7MZKdSFk2dlplLy7ATkZ
 * Crazy JS Async https://www.youtube.com/watch?v=P2PQfRIe5UI&list=PLIF-DGMqHXLblHa3wKUVy8QGj70t418IU
+* Crazy JS Node.js https://www.youtube.com/watch?v=RJS6qpN5N8A&list=PLIF-DGMqHXLa5wj46haBmz2lFQ6pdIds7
