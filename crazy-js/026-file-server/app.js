@@ -25,7 +25,7 @@ const dirTemplate = _ => `
 `
 const isDir = async filePath => (await fsAsync.stat(filePath)).isDirectory()
 const suffixDirWithSlash = async (basePath, fileName) =>
-  fileName + (await isDir(path.join(basePath, fileName)) ? '/' : '')
+  fileName + ( await isDir(path.join(basePath, fileName)) ? '/' : '' )
 
 const createDirectoryHTML = async dirPath => {
   const files = await Promise.all(
