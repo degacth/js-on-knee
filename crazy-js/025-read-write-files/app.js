@@ -67,7 +67,7 @@ const commands = {
 	search(tasks, {args: [query], options: {all}}) {
 		const actual = tasks.filter(tasksUI.shouldShow(all))
 		const queryRegExp = new RegExp(query, 'ig')
-		tasksUI.showTasks(actual.filter(t => t.task.match(query)))
+		tasksUI.showTasks(actual.filter(t => t.task.match(queryRegExp)))
 	},
 
 	rm(tasks, {args: [id]}) {
