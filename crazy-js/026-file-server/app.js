@@ -14,12 +14,12 @@ const dirTemplate = _ => `
   <title>Files server: ${_.title}</title>
 </head>
 <body>
-	<ul>
-		<li><a href="..">..</a></li>
-		${_.files.map(f =>
+  <ul>
+    <li><a href="..">..</a></li>
+    ${_.files.map(f =>
   `<li><a href="${f}">${f}</a></li>`
   ).join('')}
-	</ul>
+  </ul>
 </body>
 </html>
 `
