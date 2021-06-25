@@ -13,9 +13,9 @@ const withFile = async (fileName, mode, callback) => {
 	}
 }
 
-/*
-	parseArgs('search hello --all') === {args: ['search', 'hello'], options: {all: true}}
-*/
+/**
+ * parseArgs(['search', 'hello', '--all']) === {args: ['search', 'hello'], options: {all: true}}
+ */
 const parseArgs = args => args.reduce((acc, item) => {
 	if (item.startsWith('--')) {
 		const [key, value] = item.split('=')
@@ -45,7 +45,7 @@ const tasksUI = {
 }
 
 const commands = {
-	async add(tasks, {args: [task]}) {
+	add(tasks, {args: [task]}) {
 		if (!task) throw new Error('Params has no task')
 
 		const id = tasks.map(t => t.id).sort().reverse()[0] + 1 || 1
@@ -77,12 +77,12 @@ const commands = {
 const main = async commandArgs => {
 	const commandName = commandArgs.args.shift()
 	const command = commands[commandName] || (() => console.log(`Unknown command: ${commandName}`))
-	const tasksData = await withFile(db, mode.read, async handler => await handler.readFile(encoding))
+	const tasksData = await withFile(db, mode.read, handler => handler.readFile(encoding))
 	const tasks = tasksData ? JSON.parse(tasksData) : []
 
 	try {
 		const newTasks = await command(tasks, commandArgs)
-		if (newTasks) await withFile(db, mode.write, async handler => handler.write(
+		if (newTasks) await withFile(db, mode.write, handler => handler.write(
 			JSON.stringify(newTasks, null, 2)
 		))
 	} catch (e) {
