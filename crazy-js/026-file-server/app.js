@@ -17,8 +17,8 @@ const dirTemplate = _ => `
   <ul>
     <li><a href="..">..</a></li>
     ${_.files.map(f =>
-  `<li><a href="${f}">${f}</a></li>`
-  ).join('')}
+      `<li><a href="${f}">${f}</a></li>`
+    ).join('')}
   </ul>
 </body>
 </html>
