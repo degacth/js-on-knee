@@ -1,0 +1,22 @@
+{
+  "name": "027-shebang-file-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "jasmine",
+    "start": "node app.js"
+  },
+  "bin": {
+    "http-file-server": "./app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "geckodriver": "^2.0.0",
+    "get-port": "^5.1.1",
+    "jasmine": "^3.7.0",
+    "selenium-webdriver": "^4.0.0-beta.4"
+  }
+}
