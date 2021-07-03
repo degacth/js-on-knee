@@ -1,0 +1,25 @@
+{
+  "name": "029-debugger-fizz-buzz",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "watch \"jasmine\" src spec -i=2",
+    "start": "node app.js --max=10 --tasks=3"
+  },
+  "keywords": [],
+  "author": "Alex Monad",
+  "license": "ISC",
+  "devDependencies": {
+    "jasmine": "^3.8.0",
+    "jasmine-spec-reporter": "^7.0.0",
+    "watch": "^1.0.2"
+  },
+  "dependencies": {
+    "chalk": "^4.1.1",
+    "cli-table": "^0.3.6",
+    "prompts": "^2.4.1",
+    "shuffle-array": "^1.0.1",
+    "yargs": "^17.0.1"
+  }
+}
