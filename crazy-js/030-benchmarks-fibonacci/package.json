@@ -1,0 +1,16 @@
+{
+  "name": "030-benchmarks-fibonacci",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "jasmine",
+    "bench": "nanobench benchs/fib.bench.js"
+  },
+  "keywords": [],
+  "author": "Alex Monad",
+  "license": "ISC",
+  "devDependencies": {
+    "jasmine": "^3.8.0",
+    "nanobench": "^2.1.1"
+  }
+}
