@@ -8,8 +8,8 @@
         image.src = 'js.png'
         image.style.position = 'fixed'
         value = array[i]
-        image.style.top = 150 * i + 100
-        image.style.left = value
+        image.style.top = (150 * i + 100) + 'px'
+        image.style.left = value + 'px'
         image.style.transform = 'rotate('+ value +'deg)'
         image.style.transition = 'all 2s'
         image.width = value
