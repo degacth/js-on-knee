@@ -1,0 +1,39 @@
+{
+  "name": "031-chat",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "concurrently \"npm run client\" \"npm run server\" --kill-others-on-fail",
+    "test": "concurrently \"vue-cli-service serve --mode test\" \"jasmine\" --kill-others",
+    "client": "vue-cli-service serve",
+    "server": "nodemon -r dotenv/config server/app.js dotenv_config_path=\".env.development\" --ignore=\"client\""
+  },
+  "dependencies": {
+    "dotenv": "^8.6.0",
+    "http-terminator": "^3.0.0",
+    "uikit": "^3.7.0",
+    "vue": "^3.0.0",
+    "vue-router": "^4.0.0-0",
+    "vuex": "^4.0.0-0",
+    "ws": "^6.2.2"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-router": "~4.5.0",
+    "@vue/cli-plugin-vuex": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "@vue/compiler-sfc": "^3.0.0",
+    "concurrently": "^6.2.0",
+    "geckodriver": "^2.0.1",
+    "jasmine": "^3.8.0",
+    "jasmine-spec-reporter": "^7.0.0",
+    "nodemon": "^2.0.12",
+    "selenium-webdriver": "^4.0.0-beta.4",
+    "stylus": "^0.54.7",
+    "stylus-loader": "^3.0.2"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
