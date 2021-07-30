@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Состав цвета</title>
+  <link rel="stylesheet" href="uikit.min.css">
+</head>
+<body class="uk-container uk-margin-top">
+  <h1>Количество повторений</h1>
+
+  <ul class="uk-list uk-list-bullet">
+    <li><code>[0-9]{2,5}</code> числа от нуля до 9. От 2 до 5 повторений</li>
+    <li><code>[a-zA-z0-9_]{1,} === \w+</code> любой цифробуквенный символ включая подчёркивание. Одно и более повторений</li>
+    <li><code>[0-9]{0,1} === \d?</code> любое число 0 или 1-но повторение</li>
+    <li><code>[а-яё]{0,} === [а-яё]*</code> строчная кириллица. 0 и более повторений</li>
+  </ul>
+  <div class="uk-flex">
+    <input type="color" class="uk-input" id="color">
+    <input type="color" class="uk-input" id="R">
+    <input type="color" class="uk-input" id="G">
+    <input type="color" class="uk-input" id="B">
+  </div>
+
+  <script>
+    function colorChanged() {
+      const matches = color.value.match(/#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/)
+      if (!matches || matches.length < 4) return alert('Неверно выбран цвет')
+
+      const red = matches[1]
+      const green = matches[2]
+
+      R.value = `#${red}0000`
+      G.value = `#00${green}00`
+    }
+
+    color.oninput = colorChanged
+    colorChanged()
+  </script>
+</body>
+</html>
