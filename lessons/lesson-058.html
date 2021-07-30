@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Диапазон символов</title>
+  <link rel="stylesheet" href="uikit.min.css">
+</head>
+<body class="uk-container uk-margin-top">
+  <h1>Диапазоны символов и их количество</h1>
+  <ul class="uk-list uk-list-bullet">
+    <li><code>[ауоыиэяюёе]</code> любая гласная буква. Ровно одна штука</li>
+    <li><code>[а-я]+</code> любая строчная буква в диапазоне от <i>"a"</i> до <i>"я"</i>. Один и более</li>
+    <li><code>[А-Я]?</code> любая заглавная буква в диапазоне от <i>"A"</i> до <i>"Я"</i>. Ноль или один</li>
+    <li><code>[А-я0-9,.!?]*</code>любой кириллический символ, а также числа и некоторые знаки препинания. Ноль или сколько угодно</li>
+  </ul>
+
+  <hr>
+  Введите (Фамилия Имя Отчество)
+  <input type="text" class="uk-input" required pattern="[А-Я][а-я]+ [А-Я][а-я]+ [А-Я][а-я]+" id="username">
+
+  <script>
+    const danger = 'uk-form-danger'
+    const success = 'uk-form-success'
+
+    function usernameChanged() {
+      const classes = username.classList
+      classes.remove(danger, success)
+
+      if (username.checkValidity()) classes.add(success)
+      else classes.add(danger)
+    }
+
+    username.oninput = usernameChanged
+    usernameChanged()
+  </script>
+</body>
+</html>
