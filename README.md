@@ -15,7 +15,7 @@
 * JavaScript основы. Функции https://www.youtube.com/watch?v=pwbdyEADWzg&list=PLIF-DGMqHXLaXePW7XiAAPpGQxMygZtdM
 * JavaScript основы. Объекты https://www.youtube.com/watch?v=lbB-5KGPoyg&list=PLIF-DGMqHXLbOgAvc4Y-RoUwqm_V38NSP
 * JavaScript основы. VueJS https://www.youtube.com/watch?v=KGAOLo1YQkA&list=PLIF-DGMqHXLbfiYsK7aVWRByBAcf1kl03
-* JavaScript основы. Регулярные выражения 
+* JavaScript основы. Регулярные выражения https://www.youtube.com/playlist?list=PLIF-DGMqHXLYP06P8TWXSsX5krXpsyCoe
 * Практика JavaScript VueJS UIKit. Календарь задач https://www.youtube.com/watch?v=BeL4c2XUJNE&list=PLIF-DGMqHXLaNkKUdBbes6098R3YCLQa-
 
 ### Crazy JS (расширенный курс)
