@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Query String</title>
+  <link rel="stylesheet" href="uikit.min.css">
+</head>
+<body class="uk-container uk-margin-top">
+  <h1>Любой символ или любой кроме</h1>
+
+  <ul class="uk-list uk-list-bullet">
+    <li><code>.+</code> любой символ. Один и более</li>
+    <li><code>[^0-9] === [^\d]{1}</code> любой символ кроме числа. Ровно 1-но вхождение</li>
+    <li><code>[^\s]{1,10}</code> любой символ кроме пробела. От 1-го до 10-ти</li>
+  </ul>
+
+  <dl>
+    <dt>Query string (строка запроса)</dt>
+    <dd>
+      набор параметров передающихся в URL после знака <strong>"?"</strong><br>
+      <i>http://some-host.ru/some/url/path<strong>?<code>param=value&other=string&or=number</code></strong></i>
+    </dd>
+    <dt>& - разделитель</dt>
+    <dd>отделяет параметры друг от друга</dd>
+    <dt>параметр=значение</dt>
+    <dd>параметры от значений отделяются знаком равно <strong>=</strong></dd>
+  </dl>
+
+  <pre id="query"></pre>
+
+  <script>
+    const href = location.href
+    const queryString = href.replace(/.*\?/, '')
+    const params = queryString.matchAll(/([^&]+)=([^&]+)/g)
+
+    const result = {}
+    for (const param of params) {
+      result[decodeURIComponent(param[1])] = decodeURIComponent(param[2])
+    }
+
+    query.textContent = JSON.stringify(result, null, 2)
+  </script>
+</body>
+</html>
