@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Жадность и лень</title>
+  <link rel="stylesheet" href="uikit.min.css">
+</head>
+<body class="uk-container uk-margin-top">
+  <h1>Предотвращение лишних соответствий</h1>
+
+  <table class="uk-table uk-table-divider uk-table-small uk-width-1-2">
+    <caption>Жадные и ленивые кванторы</caption>
+    <thead>
+      <tr>
+        <th>Жадный</th>
+        <th>Ленивый</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>*</td>
+        <td>*?</td>
+      </tr>
+      <tr>
+        <td>+</td>
+        <td>+?</td>
+      </tr>
+      <tr>
+        <td>{n,}</td>
+        <td>{n,}?</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Иван Андреевич Крылов. Басня Мартышка и очки</h2>
+  <div id="poem">
+    Мартышка к старости слаба глазами стала;
+    А у людей она слыхала,
+    Что это зло еще не так большой руки:
+    Лишь стоит завести Очки.
+    Очков с полдюжины себе она достала;
+    Вертит Очками так и сяк:
+    То к темю их прижмет, то их на хвост нанижет,
+    То их понюхает, то их полижет;
+    Очки не действуют никак.
+    "Тьфу пропасть! — говорит она, — и тот дурак,
+    Кто слушает людских всех врак:
+    Всё про Очки лишь мне налгали;
+    А проку на-волос нет в них".
+    Мартышка тут с досады и с печали
+    О камень так хватила их,
+    Что только брызги засверкали.
+
+    К несчастью, то ж бывает у людей:
+    Как ни полезна вещь, — цены не зная ей,
+    Невежда про нее свой толк все к худу клонит;
+    А ежели невежда познатней,
+    Так он ее еще и гонит.
+  </div>
+
+  <script>
+    poem.innerHTML = poem.innerHTML
+      .replace(/(.*)\n/g, '<div>$1 &nbsp;</div>')
+
+    const divs = poem.innerHTML.match(/<div>.*?<\/div>/g)
+    const divCount = divs ? divs.length : 0
+    console.log(divCount)
+  </script>
+</body>
+
+</html>
