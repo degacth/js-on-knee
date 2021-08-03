@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Исключение повторений</title>
+  <link rel="stylesheet" href="uikit.min.css">
+</head>
+<body class="uk-container uk-margin-top">
+  <h1>Подвыражения</h1>
+  <ul>
+    <li>
+      <code>/(.*)\n/</code>
+      подвыражние это часть большего выражения, заключённого в круглые скобки и обрабатывается как единый объект
+    </li>
+    <li><code>replace(/(.*)\n/g, '«$1»')</code>часто подвыражения удобно использовать для замены</li>
+    <li>
+      <code>/(?&lt;line&gt;.*)\n/</code>
+      подвыражению может быть задано имя, где в случае замены можно обратиться по имени <code>'$&lt;line&gt;'</code>
+    </li>
+  </ul>
+
+  <textarea class="uk-textarea" rows="6" id="message"></textarea>
+  <button class="uk-button uk-button-primary uk-margin-top" id="fixMessage">Исправить</button>
+
+  <script>
+    function fix() {
+      message.value = message.value.replace(
+        /(\S+)\s+\1/g, '$1'
+        // /(?<word>\S+)\s+\k<word>/g, '$<word>'
+      )
+    }
+
+    fixMessage.onclick = fix
+  </script>
+</body>
+</html>
