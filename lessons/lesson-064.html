@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Поиск IP адреса</title>
+  <link rel="stylesheet" href="uikit.min.css">
+</head>
+<body class="uk-container uk-margin-top">
+  <h1>Вложенные подвыражения</h1>
+  <ul class="uk-list uk-list-bullet">
+    <li>подвыражения могут быть вложены</li>
+    <li>а также могут объединяться при помощи оператора "|"</li>
+    <li>
+      <code>/(?&lt;number>(?&lt;small>one|two|three)|(?&lt;big>four|five|six|seven))/gi</code>
+    </li>
+    <li onclick="this.innerHTML = this.innerHTML.replace(/(?<number>(?<small>one|two|three)|(?<big>four|five|six|seven))/gi, '<i>$<small></i> <strong>$<big></strong>')">
+      ♫ One potato Two potatoes Three potatoes Four! Five potatoes Six potatoes Seven potatoes More! 
+    </li>
+  </ul>
+
+  <h2>Валидные и не валидные IP-адреса</h2>
+  <ul class="uk-list" id="ips">
+    <li>127.0.0.1 - локальный IP-адрес</li>
+    <li>0.0.0.0 - немаршрутизируемый мета-адрес, позволяет получить доступ к локальным адресам</li>
+    <li>192.168.1.1 - часто используется роутерами (wi-fi) в локальной сети</li>
+    <li>192.168.4 - неверный IP-адрес т.к. использует только 3 числа разделённых точками</li>
+    <li>192.168.400.355 - неверный IP-адрес т.к. одно из чисел больше 255</li>
+    <li>Получить IP-адрес можно при помощи команды `ping somehost.ru`
+      - Ответ от 87.250.250.242</li>
+    <li>255.255.255.255 - используется в качестве маски подсети</li>
+  </ul>
+
+  <ul id="times">
+    <li>20:54:03</li>
+    <li>80:08:88</li>
+    <li>12:25</li>
+    <li>02:44:66</li>
+    <li>11:543</li>
+    <li>22:69:03</li>
+    <li>19:</li>
+    <li>04:12:52</li>
+    <li>00:00:00</li>
+  </ul>
+
+  <script>
+    ips.innerHTML = ips.innerHTML.replace(
+      /(?<ip>(((\d{1,2})|(1\d{2})|(2[0-4]\d)|(25[0-5]))\.){3}(((1\d{2})|(2[0-4]\d)|(25[0-5])|(\d{1,2}))))/g,
+      '<span class="uk-text-success">$<ip></span>'
+    )
+  </script>
+</body>
+
+</html>
