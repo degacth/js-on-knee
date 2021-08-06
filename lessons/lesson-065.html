@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Поиск комментариев</title>
+  <link rel="stylesheet" href="uikit.min.css">
+  <script src="vue.js"></script>
+</head>
+
+<body class="uk-container uk-margin-top">
+  <h1>Начало и конец строк, с флагами</h1>
+
+  <ul class="uk-list uk-list-bullet">
+    <li>
+      Якоря
+      <ul>
+        <li>^ - начало строки</li>
+        <li>$ - конец строки</li>
+      </ul>
+    </li>
+    <li>
+      Флаги
+      <ul>
+        <li>g - поиск всех совпадений</li>
+        <li>i - регистронезависимый поиск /[a-zA-Z]/ === /[a-z]/i</li>
+        <li>m - многострочный режим</li>
+        <li>u - поддержка юникод</li>
+        <li>y - выполняет поиск с определённого символа</li>
+      </ul>
+    </li>
+  </ul>
+
+  <pre id="vueComments"></pre>
+  <pre id="vueIfs"></pre>
+
+  <script>
+    const functionText = Vue.inject.toString()
+    const comments = functionText.match(/^\s*\/\/.*$/gm)
+    vueComments.innerHTML = comments.join('\n')
+  </script>
+</body>
+
+</html>
