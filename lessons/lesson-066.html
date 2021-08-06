@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Песняризация</title>
+  <link rel="stylesheet" href="uikit.min.css">
+</head>
+<body class="uk-container uk-margin-top">
+  <h1>Поддержка различных языков мира (юникод)</h1>
+
+  <ul class="uk-list uk-list-bullet">
+    <li>для поддержки юникод используется флаг "u"</li>
+    <li>для поиска символов юникод используется синтаксис <code>\p{SomeName}</code></li>
+    <li>Буквы <code>L</code>:
+      <ul>
+        <li>в нижнем регистре <code>Ll</code>,</li>
+        <li>модификаторы <code>Lm</code>,</li>
+        <li>заглавные буквы <code>Lt</code>,</li>
+        <li>в верхнем регистре <code>Lu</code>,</li>
+        <li>прочие <code>Lo</code>.</li>
+      </ul>
+    </li>
+    <li>Числа <code>N</code>:
+      <ul>
+        <li>десятичная цифра <code>Nd</code>,</li>
+        <li>цифры обозначаемые буквами (римские) <code>Nl</code>,</li>
+        <li>прочие <code>No</code>.</li>
+      </ul>
+    </li>
+    <li><a href="https://learn.javascript.ru/regexp-unicode">Другие категории символов</a></li>
+  </ul>
+
+  <h3>Стрелочные функции</h3>
+  <ul>
+    <li><code>function add(a, b) { return a + b }</code> == <code>const add = (a, b) => a + b</code></li>
+    <li><code>function onChange() { alert('it changed') }</code> == <code>const onChange = () => { alert('it changed') }</code></li>
+  </ul>
+
+  <input type="text" class="uk-input" id="song">
+  <script>
+    const toSongTitle = (text) => {
+      return text.replace(
+        /(\p{L})(\p{Ll}+)?/gu,
+        (_, firstLetter, remains='') => firstLetter.toUpperCase() + remains
+      )
+    }
+
+    song.oninput = () => {
+      song.value = toSongTitle(song.value)
+    }
+  </script>
+</body>
+</html>
