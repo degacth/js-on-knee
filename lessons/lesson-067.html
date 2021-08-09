@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Лучшие цены</title>
+  <link rel="stylesheet" href="uikit.min.css">
+</head>
+<body class="uk-container uk-margin-top">
+  <h1>Просмотр вперёд и назад</h1>
+
+  <ul class="uk-list uk-list-bullet">
+    <li>Просмотр вперёд<br>
+      <code>'10$ 78₽ 21$ 46₽'.match(/\d+(?=₽)/g) === [ "78", "46" ]</code>
+    </li>
+    <li>Просмотр назад<br>
+      <code>'$10 ₽78 $21 ₽46'.match(/(?&lt;=₽)\d+/g) === [ "78", "46" ]</code>
+    </li>
+    <li>Отрицательный просмотр вперёд<br>
+      <code>'10$ 78₽ 200€ 93¥ 21$ 46₽'.match(/\d+(?!₽)\b/g) === [ "10", "200", "93", "21" ] </code>
+    </li>
+    <li>Отрицательный просмотр назад<br>
+      <code>'$10 ₽78 €200 ¥93 $21 ₽46'.match(/\b(?&lt;!₽)\d+/g) === [ "10", "200", "93", "21" ] </code>
+    </li>
+  </ul>
+
+  <h3>Лучшие товары с лучшими ценами</h3>
+  <ul class="uk-list" id="prices">
+    <li>http://hleb-zdes.byl $20 за 100 буханок</li>
+    <li>https://tvorog-mnogo.kg $5 за 8 кг</li>
+    <li>ftp://sneg-letom.net 20 снежинок по цене одной ($199 за штуку)</li>
+  </ul>
+
+  <script>
+    prices.innerHTML = prices.innerHTML
+      .replace(/(\w+)(?=:\/\/)/g, '<span class="uk-text-meta">$1</span>')
+
+    prices.innerHTML = prices.innerHTML
+      .replace(/(?<!\$)(\b\d+\b)/g, '<span class="uk-text-danger">$1</span>')
+
+    prices.innerHTML = prices.innerHTML
+      .replace(/(?<=\$)(\d+)/g, price => `${price} (${price * 73} руб)`)
+  </script>
+</body>
+</html>
