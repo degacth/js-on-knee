@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>eGREP</title>
+  <link rel="stylesheet" href="uikit.min.css">
+</head>
+<body class="uk-container uk-margin-top">
+  <form class="uk-flex" id="searchForm">
+    <label>
+      <span class="uk-button uk-button-default">...</span>
+      <input type="file" class="uk-hidden" id="localFiles" multiple required>
+    </label>
+    <div class="uk-width-1-1">
+      <input type="text" class="uk-input" id="pattern" required>
+      <label>
+        <input type="checkbox" class="uk-checkbox" id="caseInsensitive" checked>
+        <span class="uk-text-meta uk-margin-small-left">без учёта регистра</span>
+      </label>
+    </div>
+    <div>
+      <button class="uk-button uk-button-primary">Поиск</button>
+    </div>
+  </form>
+  <div class="uk-flex uk-flex-wrap uk-margin-small-top" id="fileNames"></div>
+  <ul class="uk-list" id="searchResults"></ul>
+
+  <script>
+    const createFileLabel = (filename, textCssClass = '') =>
+      `<div class="uk-width-1-6"><span class="uk-label uk-text-truncate ${textCssClass}">${filename}</span></div>`
+
+    localFiles.onchange = event => {
+      const files = event.target.files
+      const content = []
+      fileNames.innerHTML = ''
+
+      for (const file of files) {
+        const reader = new FileReader()
+        reader.onload = event => {
+          const filecontent = {
+            filename: file.name,
+            strings: event.target.result.split('\n')
+          }
+          content.push(filecontent)
+          fileNames.innerHTML += createFileLabel(file.name)
+        }
+
+        reader.onerror = () => fileNames.innerHTML += createFileLabel(file.name, 'uk-label-danger')
+        reader.readAsText(file)
+      }
+
+      searchForm.onsubmit = event => {
+        event.preventDefault()
+
+        const regex = new RegExp(pattern.value, 'g')
+        searchResults.innerHTML = ''
+
+        for (const {filename, strings} of content) {
+          let linenumber = 0
+          for (const string of strings) {
+            linenumber++
+            if (regex.test(string)) {
+              const li = document.createElement('li')
+              li.innerHTML = `<span class="uk-text-meta">${filename} :: ${linenumber}</span>`
+              li.appendChild(document.createTextNode(string))
+              searchResults.appendChild(li)
+            }
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>
