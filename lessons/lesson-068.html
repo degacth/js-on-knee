@@ -6,6 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>eGREP</title>
   <link rel="stylesheet" href="uikit.min.css">
+
+  <style>
+    mark {
+      background: chartreuse;
+    }
+  </style>
 </head>
 <body class="uk-container uk-margin-top">
   <form class="uk-flex" id="searchForm">
@@ -54,7 +60,9 @@
       searchForm.onsubmit = event => {
         event.preventDefault()
 
-        const regex = new RegExp(pattern.value, 'g')
+        let flags = 'g'
+        if (caseInsensitive.checked) flags += 'i'
+        const regex = new RegExp(pattern.value, flags)
         searchResults.innerHTML = ''
 
         for (const {filename, strings} of content) {
@@ -64,7 +72,29 @@
             if (regex.test(string)) {
               const li = document.createElement('li')
               li.innerHTML = `<span class="uk-text-meta">${filename} :: ${linenumber}</span>`
-              li.appendChild(document.createTextNode(string))
+
+              const regex = new RegExp(pattern.value, flags)
+              let match
+              let startText = 0
+
+              while (match = regex.exec(string)) {
+                const startMatch = match.index
+                const endMatch = regex.lastIndex
+                const mark = document.createElement('mark')
+
+                li.appendChild(document.createTextNode(
+                  string.substring(startText, startMatch)
+                ))
+                mark.appendChild(document.createTextNode(
+                  string.substring(startMatch, endMatch)
+                ))
+                li.appendChild(mark)
+                startText = endMatch
+              }
+              li.appendChild(document.createTextNode(
+                string.substring(startText, string.length)
+              ))
+
               searchResults.appendChild(li)
             }
           }
