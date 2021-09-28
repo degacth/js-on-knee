@@ -1,0 +1,17 @@
+@startuml Application components
+
+package "Node.js Electron application" {
+  [User interface vue.js] as ui
+
+  node "selenium webdriver" {
+    [User events recorder] as recorder
+    [User events player] as player
+  }
+}
+
+ui --> recorder
+ui --> player
+recorder --> recordfile : save file
+player <-- recordfile: read file
+
+@enduml

@@ -1,0 +1,13 @@
+@startuml Web UI
+
+package "Application" {
+  node node.js {
+    [electron]
+    [ui]
+  }
+}
+
+electron -- ipc
+ui -- ipc
+
+@enduml
