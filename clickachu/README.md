@@ -1,5 +1,4 @@
-![Clickachu](public/20x20@2x.png)
-# Clickachu
+# ![Clickachu](public/20x20.png) Clickachu
 
 #### Clickachu is the application that allows you to record user actions in the browser, with the possibility of their subsequent playback
 
