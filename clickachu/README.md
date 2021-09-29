@@ -1,24 +1,13 @@
-# clickachu
+![Clickachu](public/20x20@2x.png)
+# Clickachu
 
-## Project setup
-```
-npm install
-```
+#### Clickachu is the application that allows you to record user actions in the browser, with the possibility of their subsequent playback
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Application components
+![Application components](../out/clickachu/docs/components/Application%20components.png)
 
-### Compiles and minifies for production
-```
-npm run build
-```
+## Recorder component
+![Record component](../out/clickachu/docs/recorder/User%20events%20recorder.png)
 
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Interaction of the user interface and electron.js
+![UI and electron](../out/clickachu/docs/ui/Web%20UI.png)
