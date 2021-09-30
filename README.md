@@ -23,3 +23,6 @@
 * Crazy JS Функции https://www.youtube.com/watch?v=UcqB7li-PR4&list=PLIF-DGMqHXLZx7MZKdSFk2dlplLy7ATkZ
 * Crazy JS Async https://www.youtube.com/watch?v=P2PQfRIe5UI&list=PLIF-DGMqHXLblHa3wKUVy8QGj70t418IU
 * Crazy JS Node.js https://www.youtube.com/watch?v=RJS6qpN5N8A&list=PLIF-DGMqHXLa5wj46haBmz2lFQ6pdIds7
+
+### Практические уроки
+* Clickchu https://www.youtube.com/watch?v=0jaZYqxiVXI&list=PLIF-DGMqHXLaTeb1yD1Xdl3v1sjwTv3dp
