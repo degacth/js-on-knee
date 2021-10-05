@@ -5,6 +5,7 @@
 <script>
 
 import Menu, {MenuTypes} from '../components/menu/Menu.vue'
+import {app} from '../platform'
 
 const menu = [
   {
@@ -49,7 +50,7 @@ const menu = [
         type: MenuTypes.action,
         title: 'Quit',
         icon: 'close',
-        click: () => null,
+        click: () => app.quit(),
       },
     ],
   },

@@ -22,6 +22,7 @@
 import ItemLink from './ItemLink.vue'
 import ItemAction from './ItemAction.vue'
 import ItemSubMenu from './ItemSubMenu.vue'
+import ItemSeparator from './ItemSeparator.vue'
 
 export const MenuTypes = {
   link: 'link',
@@ -48,6 +49,7 @@ export default {
     ItemLink,
     ItemAction,
     ItemSubMenu,
+    ItemSeparator,
   }
 }
 </script>
