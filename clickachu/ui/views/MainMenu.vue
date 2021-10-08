@@ -14,6 +14,7 @@ const menu = [
       {
         title: 'New',
         icon: 'file-text',
+        path: {name: 'new-record'},
       },
       {
         type: MenuTypes.action,

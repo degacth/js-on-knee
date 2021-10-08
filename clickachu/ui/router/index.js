@@ -8,6 +8,11 @@ const routes = [
     component: MainMenu
   },
   {
+    path: '/new-record',
+    name: 'new-record',
+    component: () => import('../views/NewRecord.vue')
+  },
+  {
     path: '/about',
     name: 'About',
     // route level code-splitting

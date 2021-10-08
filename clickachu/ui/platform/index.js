@@ -7,4 +7,4 @@ const platform = {
   electron: () => require('./electron'),
 }[platformName]()()
 
-export const {app} = platform
+export const {app, clipboard} = platform

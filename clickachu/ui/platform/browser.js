@@ -3,5 +3,10 @@ export default () => ({
     quit() {
       window.close()
     }
+  },
+  clipboard: {
+    readText() {
+      return 'https://www.ya.ru'
+    }
   }
 })
