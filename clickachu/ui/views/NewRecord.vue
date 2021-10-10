@@ -27,7 +27,7 @@
 <script>
 import {clipboard} from '../platform'
 
-const urlPattern = 'http(s)?://.+'
+const urlPattern = '[a-z]{2,10}://.+'
 const urlRegex = new RegExp(urlPattern)
 
 export default {

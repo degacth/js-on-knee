@@ -7,16 +7,21 @@
     "app:dev": "npm run build && npm run app -- --dev-mode",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit"
+    "test": "mocha app/**/*.spec.js --timeout=10000 --check-leaks"
   },
   "dependencies": {
+    "chromedriver": "^94.0.0",
     "dotenv": "^8.6.0",
     "electron": "^13.5.0",
+    "get-port": "^5.1.1",
+    "http-terminator": "^3.0.3",
     "menubar": "^9.0.5",
+    "selenium-webdriver": "^4.0.0-rc-2",
     "uikit": "^3.7.4",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
-    "vuex": "^4.0.0-0"
+    "vuex": "^4.0.0-0",
+    "ws": "^7.5.5"
   },
   "devDependencies": {
     "@vue/cli-plugin-router": "~4.5.0",
