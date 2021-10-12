@@ -1,1 +1,0 @@
-const CLICKACHU_CONFIG = {"address":"localhost:52856"}
