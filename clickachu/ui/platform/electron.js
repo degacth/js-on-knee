@@ -8,4 +8,13 @@ module.exports = () => ({
     }
   },
   clipboard,
+  record: {
+    async start(url) {
+      await ipcRenderer.invoke('record-start', url)
+      return {}
+    },
+    watch() {
+
+    }
+  }
 })

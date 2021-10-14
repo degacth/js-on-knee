@@ -13,6 +13,11 @@ const routes = [
     component: () => import('../views/NewRecord.vue')
   },
   {
+    path: '/progress-record/:startUrl',
+    name: 'progress-record',
+    component: () => import('../views/ProgressRecord.vue')
+  },
+  {
     path: '/about',
     name: 'About',
     // route level code-splitting

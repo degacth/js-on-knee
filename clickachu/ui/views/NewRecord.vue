@@ -47,7 +47,10 @@ export default {
       this.$router.go(-1)
     },
     rec() {
-
+      this.$router.push({
+        name: 'progress-record',
+        params: {startUrl: this.startUrl}
+      })
     }
   }
 }
