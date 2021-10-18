@@ -18,7 +18,7 @@
         </div>
       </div>
 
-      <button class="uk-button uk-button-danger uk-button-small uk-width-1-4">rec</button>
+      <button class="uk-button uk-button-danger uk-button-small uk-width-1-4" id="new-record-start">rec</button>
       <button @click="cancel" class="uk-button uk-button-default uk-button-small uk-width-1-4" type="button">cancel</button>
     </fieldset>
   </form>

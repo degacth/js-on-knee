@@ -3,8 +3,14 @@
     <legend class="uk-legend">Record in progress</legend>
 
     <div class="uk-height-1-1 uk-width-1-1 uk-flex uk-flex-middle uk-flex-center">
-      <div uk-spinner v-if="!currentRecord"></div>
-      <ul class="uk-iconnav uk-flex uk-flex-nowrap uk-width-1-1" v-else>
+      <div v-if="recordError"
+           class="uk-text-danger"
+           id="progress-record-error">
+
+           {{recordError}}
+      </div>
+      <div uk-spinner v-else-if="!currentRecord"></div>
+      <ul class="uk-iconnav uk-flex uk-flex-nowrap uk-width-1-1" v-else id="progress-record-controls">
         <li>
           <button class="uk-text-primary"
                   type="button"
@@ -35,11 +41,15 @@ export default {
     const startUrl = this.$route.params.startUrl
     const fileName = startUrl.replace(/\w+:\/\/([^\/]+).*/g, '$1')
 
-    return {startUrl, fileName, record, currentRecord: null}
+    return {startUrl, fileName, record, currentRecord: null, recordError: null}
   },
   async created() {
-    this.currentRecord = await record.start(this.startUrl)
-    record.watch(this.onRecordStopped)
+    try {
+      this.currentRecord = await record.start(this.startUrl)
+      record.watch(this.onRecordStopped)
+    } catch (e) {
+      this.recordError = e
+    }
   },
   methods: {
     onRecordStopped() {

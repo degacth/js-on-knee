@@ -1,6 +1,6 @@
 <template>
   <li>
-    <router-link :to="item.path || ''">
+    <router-link :to="item.path || ''" :id="item.id || ''">
       <slot name="before"></slot> {{item.title}}
     </router-link>
   </li>

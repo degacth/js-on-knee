@@ -12,6 +12,7 @@ const menu = [
     header: 'Record',
     items: [
       {
+        id: 'menu-item-record-new',
         title: 'New',
         icon: 'file-text',
         path: {name: 'new-record'},

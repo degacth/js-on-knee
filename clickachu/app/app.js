@@ -14,10 +14,13 @@ const mb = new menubar({
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
+      enableRemoteModule: app.commandLine.hasSwitch('enable-remote')
     },
     width: 400,
     height,
-  }
+    alwaysOnTop: app.commandLine.hasSwitch('on-top')
+  },
+  preloadWindow: app.commandLine.hasSwitch('preload-window')
 })
 
 mb.on('after-create-window', () => isDevMode && mb.window.openDevTools())
