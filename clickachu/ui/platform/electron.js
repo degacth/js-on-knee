@@ -13,8 +13,11 @@ module.exports = () => ({
       await ipcRenderer.invoke('record-start', url)
       return {}
     },
-    watch() {
-
+    stop() {
+      ipcRenderer.send('record-stop')
+    },
+    watch(handler) {
+      ipcRenderer.once('record-stopped', handler)
     }
   }
 })

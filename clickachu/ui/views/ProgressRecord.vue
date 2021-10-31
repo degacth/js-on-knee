@@ -14,12 +14,14 @@
         <li>
           <button class="uk-text-primary"
                   type="button"
+                  id="progress-record-stop-control"
                   :hidden="currentRecord.stopped"
                   @click="record.stop"
                   uk-icon="check"></button>
 
           <button class="uk-text-danger"
                   type="button"
+                  id="progress-record-cancel-control"
                   :hidden="!currentRecord.stopped"
                   @click="cancel"
                   uk-icon="ban"></button>

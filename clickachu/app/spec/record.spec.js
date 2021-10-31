@@ -15,17 +15,22 @@ const app = new Application({
   ]
 })
 
-describe.only('application record specification', () => {
+describe('application record specification', () => {
   const menuPage = new MenuPage(app)
   const newRecordPage = new NewRecordPage(app)
   const progressRecordPage = new ProgressRecordPage(app)
 
   beforeEach(async () => {
     await app.start()
+    await app.client.setTimeout({implicit: 4000})
     return app.browserWindow.show()
   })
 
-  afterEach(async () => app.stop())
+  afterEach(async () => {
+    const logs = (await app.client.getMainProcessLogs()) || []
+    logs.forEach(item => console.log(item))
+    return app.isRunning() && app.stop()
+  })
 
   describe('when user start new record', () => {
     beforeEach(async () => {
@@ -36,6 +41,14 @@ describe.only('application record specification', () => {
 
     it('should start progress', async () => {
       expect(await progressRecordPage.isStarted()).to.be.true
+    })
+
+    describe('and stop record', () => {
+      beforeEach(async () => await progressRecordPage.stop())
+
+      it('should be stopped', async () => {
+        expect(await progressRecordPage.isStopped()).to.be.true
+      })
     })
   })
 })

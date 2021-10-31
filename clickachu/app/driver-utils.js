@@ -26,4 +26,17 @@ class DriverBuilder {
   }
 }
 
-module.exports = {DriverBuilder}
+const sleep = timeout => new Promise(res => setTimeout(res, timeout))
+
+const watchClosedByUser = async (driver, period) => {
+  while (true) {
+    try {
+      await driver.getAllWindowHandles()
+    } catch (e) {
+      return
+    }
+    await sleep(period)
+  }
+}
+
+module.exports = {DriverBuilder, watchClosedByUser}
