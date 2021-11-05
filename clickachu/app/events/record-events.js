@@ -1,10 +1,11 @@
-const {ipcMain, app} = require('electron')
+const {ipcMain, app, dialog} = require('electron')
 const {Recorder} = require('../recorder')
 const {DriverBuilder, watchClosedByUser} = require('../driver-utils')
+const fs = require('fs/promises')
 
 let activeRecord = null
 
-module.exports = () => {
+module.exports = ({mb}) => {
   ipcMain.handle('record-start', async (event, url) => {
     const recorder = new Recorder()
     await recorder.init()
@@ -13,13 +14,37 @@ module.exports = () => {
     const driver = await new DriverBuilder().withRecordExtension(config).build()
     await driver.get(url)
 
-    activeRecord = {driver}
+    activeRecord = {driver, recorder, startUrl: url}
     watchRecordStopped(event.sender, driver)
   })
 
   ipcMain.on('record-stop', event => {
     quitDriver()
     event.sender.send('record-stopped')
+  })
+
+  ipcMain.handle('record-cancel', () => activeRecord = null)
+
+  ipcMain.handle('record-save', async (_, filename) => {
+    const {window} = mb
+    const defaultPath = `${app.getPath('documents')}/${filename}.json`
+    const {filePath} = await dialog.showSaveDialog(window, {
+      defaultPath,
+      filters: [
+        { name: 'Json Files', extensions: ['json'] },
+      ],
+    })
+
+    if (!filePath) return
+
+    const recordData = {
+      startUrl: activeRecord.startUrl,
+      record: activeRecord.recorder.record,
+    }
+
+    await fs.writeFile(filePath, JSON.stringify(recordData, null, 2))
+    activeRecord = null
+    return filePath
   })
 }
 

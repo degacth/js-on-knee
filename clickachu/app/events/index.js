@@ -1,9 +1,9 @@
 const appEvents = require('./app-events')
 const recordEvents = require('./record-events')
 
-const init = () => {
+const init = (options) => {
   appEvents()
-  recordEvents()
+  recordEvents(options)
 }
 
 module.exports = {init}

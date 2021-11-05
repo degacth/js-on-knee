@@ -50,5 +50,16 @@ describe('application record specification', () => {
         expect(await progressRecordPage.isStopped()).to.be.true
       })
     })
+
+    describe('and cancel record', () => {
+      beforeEach(async () => {
+        await progressRecordPage.stop()
+        await progressRecordPage.cancel()
+      })
+
+      it.only('should show main menu', async () => {
+        expect(await menuPage.isVisible()).to.be.true
+      })
+    })
   })
 })

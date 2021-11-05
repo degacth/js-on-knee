@@ -28,4 +28,4 @@ mb.on('ready', () => mb.tray.on('right-click', () => {
   isDevMode && setTimeout(() => app.quit(), 200)
 }))
 
-initEvents()
+initEvents({mb})

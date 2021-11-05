@@ -1,6 +1,8 @@
 const {BasePage} = require('./base-page');
 
 class ProgressRecordPage extends BasePage {
+  cancelControlSelector = '#progress-record-cancel-control'
+
   isStarted() {
     return this.isVisible('#progress-record-controls')
   }
@@ -10,7 +12,11 @@ class ProgressRecordPage extends BasePage {
   }
 
   isStopped() {
-    return this.isVisible('#progress-record-cancel-control')
+    return this.isVisible(this.cancelControlSelector)
+  }
+
+  cancel() {
+    return this.click(this.cancelControlSelector)
   }
 }
 
