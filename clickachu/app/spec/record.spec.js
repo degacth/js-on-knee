@@ -57,7 +57,7 @@ describe('application record specification', () => {
         await progressRecordPage.cancel()
       })
 
-      it.only('should show main menu', async () => {
+      it('should show main menu', async () => {
         expect(await menuPage.isVisible()).to.be.true
       })
     })

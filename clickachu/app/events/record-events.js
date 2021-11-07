@@ -11,7 +11,10 @@ module.exports = ({mb}) => {
     await recorder.init()
     const config = {address: recorder.address}
 
-    const driver = await new DriverBuilder().withRecordExtension(config).build()
+    const driver = await new DriverBuilder()
+      .noAutomation()
+      .maximized()
+      .withRecordExtension(config).build()
     await driver.get(url)
 
     activeRecord = {driver, recorder, startUrl: url}
@@ -25,10 +28,9 @@ module.exports = ({mb}) => {
 
   ipcMain.handle('record-cancel', () => activeRecord = null)
 
-  ipcMain.handle('record-save', async (_, filename) => {
-    const {window} = mb
+  ipcMain.handle('record-save', async (event, filename) => {
     const defaultPath = `${app.getPath('documents')}/${filename}.json`
-    const {filePath} = await dialog.showSaveDialog(window, {
+    const {filePath} = await dialog.showSaveDialog(event.sender.getOwnerBrowserWindow(), {
       defaultPath,
       filters: [
         { name: 'Json Files', extensions: ['json'] },
@@ -51,8 +53,12 @@ module.exports = ({mb}) => {
 const closedByUserWatchPeriod = 500
 const watchRecordStopped = async (sender, driver) => {
   await watchClosedByUser(driver, closedByUserWatchPeriod)
+  activeRecord?.recorder.close()
   sender.send('record-stopped')
 }
 
-const quitDriver = () => activeRecord?.driver.quit()
+const quitDriver = () => {
+  activeRecord?.driver.quit()
+  activeRecord?.recorder.close()
+}
 app.on('before-quit', () => quitDriver())
