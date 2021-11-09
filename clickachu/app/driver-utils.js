@@ -14,6 +14,7 @@ class DriverBuilder {
 
   noAutomation = this.fluentOption(o => o.excludeSwitches('enable-automation'))
   maximized = this.fluentOption(o => o.addArguments('start-maximized'))
+  disableNotifications = this.fluentOption(o => o.addArguments('disable-notifications'))
 
   withRecordExtension = this.fluentOption((o, config) => {
     const pathToExtension = `${__dirname}/recorder/extension`

@@ -14,6 +14,7 @@ module.exports = ({mb}) => {
     const driver = await new DriverBuilder()
       .noAutomation()
       .maximized()
+      .disableNotifications()
       .withRecordExtension(config).build()
     await driver.get(url)
 

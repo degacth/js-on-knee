@@ -15,6 +15,7 @@
     "electron": "^13.5.0",
     "get-port": "^5.1.1",
     "http-terminator": "^3.0.3",
+    "lodash": "^4.17.21",
     "menubar": "^9.0.5",
     "selenium-webdriver": "^4.0.0-rc-2",
     "uikit": "^3.7.4",
