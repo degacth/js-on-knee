@@ -1,5 +1,5 @@
 const {expect} = require('chai')
-const { MemoryStorage, Settings } = require('.')
+const {MemoryStorage, Settings} = require('.')
 
 describe.only('settings specification', () => {
   let settings
