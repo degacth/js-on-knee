@@ -25,5 +25,9 @@ module.exports = () => ({
     watch(handler) {
       ipcRenderer.once('record-stopped', handler)
     }
+  },
+  settings: {
+    recent() {
+    }
   }
 })

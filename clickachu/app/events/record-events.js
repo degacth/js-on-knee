@@ -5,7 +5,7 @@ const fs = require('fs/promises')
 
 let activeRecord = null
 
-module.exports = ({mb}) => {
+module.exports = ({settings}) => {
   ipcMain.handle('record-start', async (event, url) => {
     const recorder = new Recorder()
     await recorder.init()
@@ -47,6 +47,8 @@ module.exports = ({mb}) => {
 
     await fs.writeFile(filePath, JSON.stringify(recordData, null, 2))
     activeRecord = null
+
+    await settings.addRecent(filePath)
     return filePath
   })
 }

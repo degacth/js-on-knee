@@ -28,5 +28,15 @@ export default () => ({
     cancel() {
       
     }
+  },
+  settings: {
+    async recent() {
+      await sleep(1000)
+      return [
+        `D:\\Data\\records\\www.google.com.json`,
+        `D:\\Data\\records\\yandex.ru.json`,
+        '/var/lib/linux.org',
+      ]
+    }
   }
 })

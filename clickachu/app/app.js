@@ -2,6 +2,8 @@ require('dotenv').config()
 const {menubar} = require('menubar')
 const {app} = require('electron')
 const {init: initEvents} = require('./events')
+const {Settings, FileStorage} = require('./settings')
+const path = require('path')
 
 const isDevMode = app.commandLine.hasSwitch('dev-mode')
 let height = 300
@@ -23,9 +25,13 @@ const mb = new menubar({
   preloadWindow: app.commandLine.hasSwitch('preload-window')
 })
 
+const defaultSettingsPath = path.join(app.getPath('home'), '.clickachu.json')
+const storage = new FileStorage(app.commandLine.getSwitchValue('settings') || defaultSettingsPath)
+const settings = new Settings(storage)
+
 mb.on('after-create-window', () => isDevMode && mb.window.openDevTools())
 mb.on('ready', () => mb.tray.on('right-click', () => {
   isDevMode && setTimeout(() => app.quit(), 200)
 }))
 
-initEvents({mb})
+initEvents({mb, settings})

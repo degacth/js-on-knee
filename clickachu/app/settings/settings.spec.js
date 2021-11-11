@@ -1,7 +1,7 @@
 const {expect} = require('chai')
 const {MemoryStorage, Settings} = require('.')
 
-describe.only('settings specification', () => {
+describe('settings specification', () => {
   let settings
 
   describe('when user saves recent list', () => {

@@ -1,6 +1,6 @@
 <template>
   <li class="uk-parent">
-    <a>
+    <a :id="item.id || ''">
       <slot name="before"></slot> {{item.title}}
     </a>
     <slot name="submenu"></slot>
