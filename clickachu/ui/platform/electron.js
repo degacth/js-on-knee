@@ -28,6 +28,7 @@ module.exports = () => ({
   },
   settings: {
     recent() {
+      return ipcRenderer.invoke('settings-recent')
     }
   }
 })

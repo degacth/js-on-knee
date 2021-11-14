@@ -16,7 +16,7 @@ SpectronBuilder.init()
   .run('main menu specification', ({app}) => {
     const menuPage = new MenuPage(app)
 
-    describe.only('when user select recent files', () => {
+    describe('when user select recent files', () => {
       beforeEach(() => menuPage.openRecent())
 
       it('should show recent list', async () => {
