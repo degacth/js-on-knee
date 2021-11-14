@@ -15,9 +15,10 @@ module.exports = ({settings}) => {
       .noAutomation()
       .maximized()
       .disableNotifications()
-      .withRecordExtension(config).build()
-    await driver.get(url)
+      .withRecordExtension(config)
+      .build()
 
+    await driver.get(url)
     activeRecord = {driver, recorder, startUrl: url}
     watchRecordStopped(event.sender, driver)
   })
