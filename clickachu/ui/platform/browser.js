@@ -1,5 +1,11 @@
 const sleep = timeout => new Promise(res => setTimeout(res, timeout))
 
+const recent = new Set([
+  `D:\\Data\\records\\www.google.com.json`,
+  `D:\\Data\\records\\yandex.ru.json`,
+  '/var/lib/linux.org',
+])
+
 export default () => ({
   app: {
     quit() {
@@ -27,16 +33,21 @@ export default () => ({
     },
     cancel() {
       
+    },
+    open() {
+      return '/some/fake/file.json'
+    },
+    play() {
+
     }
   },
   settings: {
     async recent() {
       await sleep(1000)
-      return [
-        `D:\\Data\\records\\www.google.com.json`,
-        `D:\\Data\\records\\yandex.ru.json`,
-        '/var/lib/linux.org',
-      ]
+      return [...recent]
+    },
+    addRecent(path) {
+      recent.add(path)
     }
   }
 })

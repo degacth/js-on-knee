@@ -22,11 +22,20 @@ class DriverBuilder {
     fs.writeFileSync(`${pathToExtension}/config.js`, `const CLICKACHU_CONFIG = ${JSON.stringify(config)}`)
   })
 
-  build() {
-    return new Builder()
+  setImplicitTimeout(timeout) {
+    this.implicitTimeout = timeout
+    return this
+  }
+
+  async build() {
+    const driver = await new Builder()
       .forBrowser('chrome')
       .setChromeOptions(this.options)
       .build()
+
+    if (this.implicitTimeout) driver.manage().setTimeouts({implicit: this.implicitTimeout})
+    
+    return driver
   }
 }
 

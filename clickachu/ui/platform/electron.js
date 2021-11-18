@@ -24,11 +24,20 @@ module.exports = () => ({
     },
     watch(handler) {
       ipcRenderer.once('record-stopped', handler)
+    },
+    open() {
+      return ipcRenderer.invoke('record-open')
+    },
+    play(path) {
+      return ipcRenderer.invoke('record-play', path)
     }
   },
   settings: {
     recent() {
       return ipcRenderer.invoke('settings-recent')
+    },
+    addRecent(path) {
+      return ipcRenderer.invoke('settings-recent-add', path)
     }
   }
 })
