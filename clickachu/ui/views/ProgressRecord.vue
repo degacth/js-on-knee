@@ -29,7 +29,11 @@
         <li class="uk-width-1-1">
           <input class="uk-input uk-form-small" v-model="fileName" />
         </li>
-        <li><button class="uk-text-primary" uk-icon="pull" :disabled="!currentRecord.stopped"></button></li>
+        <li>
+          <button uk-icon="pull" 
+                  :class="{'uk-text-primary': currentRecord.stopped}"
+                  :disabled="!currentRecord.stopped"></button>
+        </li>
       </ul>
     </div>
   </form>

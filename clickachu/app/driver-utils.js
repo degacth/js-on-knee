@@ -41,13 +41,27 @@ class DriverBuilder {
 
 const sleep = timeout => new Promise(res => setTimeout(res, timeout))
 
-const watchClosedByUser = async (driver, period) => {
+const watchClosedByUser = async (driver, period, closeLimitTime=300) => {
+  let timeoutId, resolver = null
+  const stopClosedTimeout = () => {
+    clearTimeout(timeoutId)
+    resolver?.()
+  }
+
   while (true) {
     try {
-      await driver.getAllWindowHandles()
+      const closedTimeout = new Promise((res, rej) => {
+        timeoutId = setTimeout(() => rej(new Error('browser closed')), closeLimitTime)
+        resolver = res
+      })
+      const driverHandler = driver.getAllWindowHandles()
+      await Promise.race([closedTimeout, driverHandler])
     } catch (e) {
       return
+    } finally {
+      stopClosedTimeout()
     }
+
     await sleep(period)
   }
 }

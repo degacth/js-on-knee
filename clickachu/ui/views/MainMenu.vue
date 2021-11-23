@@ -78,7 +78,15 @@ export default {
       const recent = await settings.recent()
       const recentMenuPath = '0.items.2.menu.0.items'
       _.set(this.menu, recentMenuPath, recent.map(item => ({
-        title: pathToFilename(item), icon: 'play-circle'
+        title: pathToFilename(item),
+        icon: 'play-circle',
+        tooltip: item,
+        type: MenuTypes.action,
+        click: async () => {
+          record.play(item)
+          await settings.addRecent(item)
+          await this.updateRecent()
+        }
       })))
     }
   },

@@ -1,6 +1,6 @@
 <template>
   <li>
-    <a @click.prevent="item.click">
+    <a @click.prevent="item.click" :title="item.tooltip">
       <slot name="before"></slot> {{ item.title }}
     </a>
   </li>

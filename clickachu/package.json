@@ -10,7 +10,7 @@
     "test": "mocha app/**/*.spec.js --timeout=10000 --check-leaks"
   },
   "dependencies": {
-    "chromedriver": "^94.0.0",
+    "chromedriver": "^96.0.0",
     "dotenv": "^8.6.0",
     "electron": "^13.5.0",
     "get-port": "^5.1.1",
