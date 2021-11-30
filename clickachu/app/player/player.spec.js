@@ -2,7 +2,7 @@ const {Player} = require('.')
 const {DriverBuilder} = require('../driver-utils')
 const {expect} = require('chai')
 
-describe.only('player specification', () => {
+describe('player specification', () => {
   let player, driver
 
   beforeEach(async () => {

@@ -37,4 +37,36 @@ describe('settings specification', () => {
       expect(await settings.recentItems()).to.be.deep.equal(['d', 'a', 'b', 'c', 'e'])
     })
   })
+
+  describe('when user work with directories', () => {
+    let storage
+
+    beforeEach(() => {
+      storage = new MemoryStorage({
+        latestDirs: {
+          played: '/var/lib/played',
+          opened: '~/records'
+        },
+      })
+      settings = new Settings(storage)
+    })
+
+    it('should load latest dirs with default params', async () => {
+      expect(await settings.latestDirs()).to.be.deep.equal({
+        played: '.',
+        opened: '.',
+      })
+    })
+
+    it('should update latest dirs', async () => {
+      const latestDirs = {
+        played: '/foo/bar',
+        opened: '/hello/world'
+      }
+
+      await settings.updateLatestDirs(latestDirs)
+
+      expect(storage.data.latestDirs).to.be.deep.equal(latestDirs)
+    })
+  })
 })

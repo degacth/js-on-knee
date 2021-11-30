@@ -1,5 +1,10 @@
 const _ = require('lodash')
 const fs = require('fs/promises')
+const {app} = require('electron')
+const {existsSync} = require('fs')
+
+const defaultAppPath = () => app?.getPath('documents') ?? '.'
+const latestDirs = 'latestDirs'
 
 const defaultSettings = {
   recent: {
@@ -13,16 +18,33 @@ class Settings {
     this.storage = storage
   }
 
-  async addRecent(item) {
-    const data = await this.read()
-    let {items, limit} = data.recent
-    items = _.chain([item]).union(items).take(limit).value()
-
-    data.recent = {items, limit}
-    await this.storage.save(data)
+  withStorageUpdate = (path, cb) => async (...args) => {
+    const storageData = await this.read()
+    const data = _.get(storageData, path)
+    const result = await cb(data, ...args)
+    
+    _.set(storageData, path, result)
+    return this.storage.save(storageData)
   }
 
+  addRecent = this.withStorageUpdate('recent', ({items, limit}, item) => ({
+    items: _.chain([item]).union(items).take(limit).value(),
+    limit,
+  }))
+
   recentItems = async () => _.get(await this.read(), 'recent.items')
+
+  latestDirs = async () => {
+    const dirs = _.get(await this.read(), latestDirs)
+    for (const [k, v] of Object.entries(dirs)) {
+      if (!existsSync(v)) dirs[k] = defaultAppPath()
+    }
+
+    return dirs
+  }
+
+  updateLatestDirs = this.withStorageUpdate(latestDirs, (data, dirs) => _.assign(data, dirs))
+
   read = async () => _.defaultsDeep(await this.storage.read(), defaultSettings)
 }
 

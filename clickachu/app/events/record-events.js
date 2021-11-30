@@ -4,6 +4,7 @@ const {DriverBuilder, watchClosedByUser} = require('../driver-utils')
 const fs = require('fs/promises')
 const {FileStorage} = require('../settings')
 const {Player} = require('../player')
+const {dirname} = require('path')
 
 let activeRecord = null
 
@@ -33,7 +34,8 @@ module.exports = ({settings}) => {
   ipcMain.handle('record-cancel', () => activeRecord = null)
 
   ipcMain.handle('record-save', async (event, filename) => {
-    const defaultPath = `${app.getPath('documents')}/${filename}.json`
+    const latestDirs = await settings.latestDirs()
+    const defaultPath = `${latestDirs.opened}/${filename}.json`
     const {filePath} = await dialog.showSaveDialog(event.sender.getOwnerBrowserWindow(), {
       defaultPath,
       filters: dialogFilters,
@@ -49,20 +51,24 @@ module.exports = ({settings}) => {
     await fs.writeFile(filePath, JSON.stringify(recordData, null, 2))
     activeRecord = null
 
+    await settings.updateLatestDirs({...latestDirs, opened: dirname(filePath)})
     await settings.addRecent(filePath)
     return filePath
   })
 
   ipcMain.handle('record-open', async (event) => {
     const window = event.sender.getOwnerBrowserWindow()
-    const defaultPath = app.getPath('documents')
+    const latestDirs = await settings.latestDirs()
+    const defaultPath = latestDirs.played
     const {filePaths} = await dialog.showOpenDialog(window, {
       defaultPath,
       filters: dialogFilters,
       properties: ['openFile', 'showHiddenFiles',]
     })
 
-    return filePaths && filePaths[0]
+    const path = filePaths && filePaths[0]
+    if (path) await settings.updateLatestDirs({...latestDirs, played: dirname(path)})
+    return path
   })
 
   ipcMain.handle('record-play', async (event, path) => {
