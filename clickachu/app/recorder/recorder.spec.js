@@ -7,7 +7,7 @@ const {DriverBuilder} = require('../driver-utils')
 const {keydown, click} = require('../test/event-generator')
 const _ = require('lodash')
 
-describe.only('recorder specification', () => {
+describe('recorder specification', () => {
   let recorder = null
   let driver = null
 

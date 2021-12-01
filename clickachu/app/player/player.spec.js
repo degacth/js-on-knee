@@ -1,6 +1,9 @@
 const {Player} = require('.')
 const {DriverBuilder} = require('../driver-utils')
 const {expect} = require('chai')
+const _ = require('lodash')
+const {keydown} = require('../test/event-generator')
+const {until, By} = require('selenium-webdriver')
 
 describe('player specification', () => {
   let player, driver
@@ -32,6 +35,45 @@ describe('player specification', () => {
       await driver.navigate().back()
       title = await driver.getTitle()
       expect(title).to.be.equal('Other Page')
+    })
+  })
+
+  describe.only('when user play input', () => {
+    const login = '[type=email]'
+    const loginValue = 'user@mail.ru'
+
+    const password = '[type=password]'
+    const passwordValue = 'pa$sw0rd!ЫЫЫ'
+    const rememberMe = '[type=checkbox]'
+
+    const record = {
+      startUrl: `file://${__dirname}/../test/pages/keyinput/login-page.html`,
+      record: [
+        ... _.map(loginValue.split(''), (char) => keydown(login, char)),
+        keydown(login, 'Backspace'),
+        keydown(login, loginValue[loginValue.length - 1]),
+        keydown(login, 'Tab'),
+
+        ... _.map(passwordValue.split(''), (char) => keydown(password, char)),
+        keydown(password, 'Tab'),
+        keydown(rememberMe, ' '),
+        keydown(rememberMe, 'Enter'),
+      ],
+    }
+
+    beforeEach(async () => {
+      await player.play(record)
+      await driver.wait(until.urlContains('?'), 1000)
+    })
+
+    it('should play keys', async () => {
+      const result = JSON.parse(
+        await (await driver.findElement(By.id('result'))).getText()
+      )
+
+      expect(result).to.deep.equal({
+        login: loginValue, password: passwordValue, rememberme: 'on',
+      })
     })
   })
 })

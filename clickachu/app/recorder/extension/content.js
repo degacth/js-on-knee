@@ -9,7 +9,8 @@ const eventHandlers = {
   click: {
     extractElement: event => {
       const {target} = event
-      if (event.screenX && event.screenY) return target
+      if (event.screenX && event.screenY && event.pointerId > 0) return target
+      if (!isNaN(+target.selectedIndex)) return target.options[target.selectedIndex]
     }
   },
   keydown: {
