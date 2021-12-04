@@ -10,4 +10,10 @@ const click = el => ({
   payload: null,
 })
 
-module.exports = {keydown, click}
+const enter = el => ({
+  el,
+  type: 'mouseenter',
+  payload: null,
+})
+
+module.exports = {keydown, click, enter}

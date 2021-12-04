@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+  <style>
+    ul {
+      opacity: 0;
+      transition: all .5s ease;
+      transition-delay: .5s;
+    }
+
+    ul.shown {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id="menu">menu</div>
+
+  <script>
+    menu.onmouseenter = () => {
+      const list = document.createElement('ul')
+      list.id = 'menu-list'
+      list.innerHTML = `
+        <li id="list-1"><label><input type="checkbox"> <span id="item1">item 1</span><label></li> 
+        <li id="list-2">item 2</li> 
+      `
+
+      menu.appendChild(list)
+      setTimeout(() => list.classList.add('shown'))
+    }
+    menu.onmouseleave = () => menu.removeChild(menu.children[0])
+  </script>
+</body>
+</html>

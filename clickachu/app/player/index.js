@@ -1,6 +1,12 @@
 const {By, until, Key} = require('selenium-webdriver')
 
 const getKeyByName = name => {
+  const remapKey = {
+    Backspace: 'BACK_SPACE',
+  }
+
+  let remapped
+  if (remapped = remapKey[name]) return Key[remapped]
   return Key[name.toUpperCase()]
 }
 

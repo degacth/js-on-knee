@@ -2,10 +2,10 @@ const {Player} = require('.')
 const {DriverBuilder} = require('../driver-utils')
 const {expect} = require('chai')
 const _ = require('lodash')
-const {keydown} = require('../test/event-generator')
+const {keydown, click, enter} = require('../test/event-generator')
 const {until, By} = require('selenium-webdriver')
 
-describe('player specification', () => {
+describe.only('player specification', () => {
   let player, driver
 
   beforeEach(async () => {
@@ -38,7 +38,7 @@ describe('player specification', () => {
     })
   })
 
-  describe.only('when user play input', () => {
+  describe('when user play input', () => {
     const login = '[type=email]'
     const loginValue = 'user@mail.ru'
 
@@ -74,6 +74,22 @@ describe('player specification', () => {
       expect(result).to.deep.equal({
         login: loginValue, password: passwordValue, rememberme: 'on',
       })
+    })
+  })
+
+  describe('when user play hover', () => {
+    const record = {
+      startUrl: `file://${__dirname}/../test/pages/hover/hover-menu.html`,
+      record: [ enter('#menu'), click('#item1') ],
+    }
+
+    beforeEach(async () => {
+      await player.play(record)
+    })
+
+    it('should select menu item with hover', async () => {
+      const input = await driver.findElement(By.css('input'))
+      expect(await input.getAttribute('value')).to.be.equal('on')
     })
   })
 })
