@@ -5,7 +5,7 @@ const _ = require('lodash')
 const {keydown, click, enter} = require('../test/event-generator')
 const {until, By} = require('selenium-webdriver')
 
-describe.only('player specification', () => {
+describe('player specification', () => {
   let player, driver
 
   beforeEach(async () => {

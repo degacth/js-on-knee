@@ -23,6 +23,11 @@ const eventHandlers = {
     if (key.length === 1) return el.sendKeys(key)
     return el.sendKeys(getKeyByName(key))
   },
+  mouseenter: async (driver, event) => {
+    const el = await driver.wait(until.elementLocated(By.css(event.el)))
+    const actions = driver.actions({async: true})
+    await actions.move({origin: el}).perform()
+  },
 }
 
 class Player {
@@ -42,4 +47,6 @@ class Player {
   }
 }
 
-module.exports = {Player}
+const events = Object.keys(eventHandlers)
+
+module.exports = {Player, events}

@@ -18,6 +18,11 @@ const routes = [
     component: () => import('../views/ProgressRecord.vue')
   },
   {
+    path: '/configuration',
+    name: 'configuration',
+    component: () => import('../views/Configuration.vue'),
+  },
+  {
     path: '/about',
     name: 'About',
     // route level code-splitting

@@ -48,8 +48,10 @@ export default {
         header: 'Application',
         items: [
           {
+            id: 'menu-item-configuration',
             title: 'Configure',
             icon: 'cog',
+            path: {name: 'configuration'},
           },
           {
             title: 'About',

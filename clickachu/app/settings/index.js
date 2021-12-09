@@ -2,15 +2,31 @@ const _ = require('lodash')
 const fs = require('fs/promises')
 const {app} = require('electron')
 const {existsSync} = require('fs')
+const {events: recordEvents} = require('../player')
 
 const defaultAppPath = () => app?.getPath('documents') ?? '.'
 const latestDirs = 'latestDirs'
+const defaultRecordEvents = ['click', 'keydown']
 
 const defaultSettings = {
   recent: {
     items: [],
     limit: 5,
-  }
+  },
+  configuration: {
+    recordEvents: _.fromPairs(recordEvents.map(key => [key, defaultRecordEvents.includes(key)])),
+    closeBrowserTimeout: 500,
+    selectorTypes: {
+      id: true,
+      class: true,
+      tag: true,
+      nthchild: true,
+      attribute: false,
+      nthoftype: false,
+    },
+    rootElementSelector: '',
+    blacklistSelector: '',
+  },
 }
 
 class Settings {
@@ -44,6 +60,9 @@ class Settings {
   }
 
   updateLatestDirs = this.withStorageUpdate(latestDirs, (data, dirs) => _.assign(data, dirs))
+
+  globalConfig = async () => _.get(await this.read(), 'configuration')
+  updateGlobalConfig = this.withStorageUpdate('configuration', _.flip(_.identity)) // (data, config) => config
 
   read = async () => _.defaultsDeep(await this.storage.read(), defaultSettings)
 }

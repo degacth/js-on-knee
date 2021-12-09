@@ -48,6 +48,32 @@ export default () => ({
     },
     addRecent(path) {
       recent.add(path)
+    },
+    async globalConfig() {
+      return {
+        recordEvents: {
+          hello: true,
+          world: true,
+          foo: false,
+          bar: false,
+        },
+
+        closeBrowserTimeout: 1000,
+
+        selectorTypes: {
+          identity: true,
+          flip: true,
+          ary: false,
+          curry: true,
+        },
+
+        rootElementSelector: 'body',
+        blacklistSelector: 'html',
+      }
+    },
+
+    saveGlobalConfig(config) {
+      console.log(config)
     }
   }
 })
