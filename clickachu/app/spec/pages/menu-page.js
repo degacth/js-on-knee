@@ -24,6 +24,10 @@ class MenuPage extends BasePage {
   recentItems() {
     return this.app.client.$$(`${recentListSelector} + ul li`)
   }
+
+  configuration() {
+    return this.click('#menu-item-configuration')
+  }
 }
 
 module.exports = {MenuPage}

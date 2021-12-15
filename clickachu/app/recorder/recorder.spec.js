@@ -24,7 +24,7 @@ describe('recorder specification', () => {
 
   describe('when user rec basic events', () => {
     beforeEach(async () => {
-      const config = {address: recorder.address, events: ['click', 'keydown']}
+      const config = {address: recorder.address, recordEvents: ['click', 'keydown']}
       driver = await new DriverBuilder().withRecordExtension(config).build()
     })
 

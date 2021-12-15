@@ -10,6 +10,10 @@ class BasePage {
   async isVisible(selector) {
     return (await this.app.client.$(selector)).isDisplayed()
   }
+
+  async value(selector) {
+    return (await this.app.client.$(selector)).getValue()
+  }
 }
 
 module.exports = {BasePage}

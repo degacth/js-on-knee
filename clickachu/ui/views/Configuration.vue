@@ -23,7 +23,7 @@ export default {
   },
   methods: {
     async save() {
-      await settings.saveGlobalConfig(this.config)
+      await settings.saveGlobalConfig(_.cloneDeep(this.config))
       this.$router.push({name: 'main-menu'})
     }
   },

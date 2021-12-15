@@ -51,7 +51,8 @@ export default {
   },
   async created() {
     try {
-      this.currentRecord = await record.start(this.startUrl)
+      const config = JSON.parse(this.$route.query.config)
+      this.currentRecord = await record.start(this.startUrl, config)
       record.watch(this.onRecordStopped)
     } catch (e) {
       this.recordError = e

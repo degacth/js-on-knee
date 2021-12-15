@@ -9,8 +9,8 @@ module.exports = () => ({
   },
   clipboard,
   record: {
-    async start(url) {
-      await ipcRenderer.invoke('record-start', url)
+    async start(url, config) {
+      await ipcRenderer.invoke('record-start', url, config)
       return {}
     },
     stop() {
@@ -38,6 +38,12 @@ module.exports = () => ({
     },
     addRecent(path) {
       return ipcRenderer.invoke('settings-recent-add', path)
+    },
+    globalConfig() {
+      return ipcRenderer.invoke('settings-configuration')
+    },
+    saveGlobalConfig(config) {
+      return ipcRenderer.invoke('settings-save-configuration', config)
     }
   }
 })

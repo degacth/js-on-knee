@@ -1,6 +1,6 @@
 <template>
-  <form class="uk-form-stacked" @submit.prevent="rec">
-    <fieldset class="uk-fieldset">
+  <form class="uk-form-stacked uk-height-1-1" @submit.prevent="rec">
+    <fieldset class="uk-fieldset uk-height-1-1 uk-flex uk-flex-column">
       <legend class="uk-legend">Create new record</legend>
 
       <div class="uk-margin">
@@ -18,24 +18,31 @@
         </div>
       </div>
 
-      <button class="uk-button uk-button-danger uk-button-small uk-width-1-4" id="new-record-start">rec</button>
-      <button @click="cancel" class="uk-button uk-button-default uk-button-small uk-width-1-4" type="button">cancel</button>
+      <record-configuration :config="config" class="uk-height-1-1 uk-overflow-auto" />
+
+      <div class="uk-margin">
+        <button class="uk-button uk-button-danger uk-button-small uk-width-1-4" id="new-record-start">rec</button>
+        <button @click="cancel" class="uk-button uk-button-default uk-button-small uk-width-1-4" type="button">cancel</button>
+      </div>
     </fieldset>
   </form>
 </template>
 
 <script>
-import {clipboard} from '../platform'
+import RecordConfiguration from '../components/configuration/RecordConfiguration.vue'
+import {clipboard, settings} from '../platform'
+import * as _ from 'lodash'
 
 const urlPattern = '[a-z]{2,10}://.+'
 const urlRegex = new RegExp(urlPattern)
 
 export default {
+  components: {RecordConfiguration},
   data() {
     const clipboardText = clipboard.readText()
     const startUrl = urlRegex.test(clipboardText) ? clipboardText : ''
 
-    return {startUrl, urlPattern}
+    return {startUrl, urlPattern, config: {}}
   },
   methods: {
     getValidateClassOfStartUrl() {
@@ -49,9 +56,13 @@ export default {
     rec() {
       this.$router.push({
         name: 'progress-record',
-        params: {startUrl: this.startUrl}
+        params: {startUrl: this.startUrl},
+        query: {config: JSON.stringify(this.config)},
       })
     }
+  },
+  async created() {
+    this.config = _.cloneDeep(await settings.globalConfig())
   }
 }
 </script>

@@ -18,7 +18,8 @@ export default () => ({
     }
   },
   record: {
-    async start(url) {
+    async start(url, config) {
+      console.log('started with config', config)
       await sleep(2000)
       return {}
     },

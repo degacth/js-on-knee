@@ -1,5 +1,5 @@
-const cssSelector = el => CssSelectorGenerator.getCssSelector(el)
-const {address, events: recordEvents} = CLICKACHU_CONFIG
+const cssSelector = (el, config) => CssSelectorGenerator.getCssSelector(el, config)
+const {address, recordEvents, selectorTypes, rootElementSelector, blacklistSelector} = CLICKACHU_CONFIG
 
 const socket = new WebSocket(`ws://${address}`)
 socket.json = data => socket.send(JSON.stringify(data))
@@ -36,7 +36,12 @@ socket.onopen = () => Object.keys(eventHandlers)
       const element = extractor(event)
       if (!element) return
 
-      const selector = cssSelector(element)
+      const cssSelectorConfig = {
+        selectors: selectorTypes,
+        root: rootElementSelector && document.querySelector(rootElementSelector) || undefined,
+        blacklist: blacklistSelector && [blacklistSelector] || undefined,
+      }
+      const selector = cssSelector(element, cssSelectorConfig)
       if (!selector) return
 
       sendEvent(eventName, selector, handler.payload?.(event) ?? null)

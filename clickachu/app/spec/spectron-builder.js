@@ -55,7 +55,9 @@ class SpectronBuilder {
         return this.app?.stop()
       })
 
-      cb({app, storage})
+      cb({app, storage() {
+        return storage
+      }})
     })
   }
 }

@@ -5,14 +5,19 @@ const fs = require('fs/promises')
 const {FileStorage} = require('../settings')
 const {Player} = require('../player')
 const {dirname} = require('path')
+const _ = require('lodash')
 
 let activeRecord = null
 
 module.exports = ({settings}) => {
-  ipcMain.handle('record-start', async (event, url) => {
+  ipcMain.handle('record-start', async (event, url, userConfig) => {
     const recorder = new Recorder()
     await recorder.init()
-    const config = {address: recorder.address}
+
+    const excludeFalsyKeys = obj => _.keys(_.pickBy(obj, _.identity))
+    _.updateWith(userConfig, 'recordEvents', excludeFalsyKeys)
+    _.updateWith(userConfig, 'selectorTypes', excludeFalsyKeys)
+    const config = {address: recorder.address, ... _.omit(userConfig, ['closeBrowserTimeout'])}
 
     const driver = await new DriverBuilder()
       .noAutomation()
@@ -23,7 +28,7 @@ module.exports = ({settings}) => {
 
     await driver.get(url)
     activeRecord = {driver, recorder, startUrl: url}
-    watchRecordStopped(event.sender, driver)
+    watchRecordStopped(event.sender, driver, Math.max(+userConfig.closeBrowserTimeout || 0, 300))
   })
 
   ipcMain.on('record-stop', event => {
@@ -90,8 +95,7 @@ module.exports = ({settings}) => {
   ]
 }
 
-const closedByUserWatchPeriod = 500
-const watchRecordStopped = async (sender, driver) => {
+const watchRecordStopped = async (sender, driver, closedByUserWatchPeriod = 500) => {
   await watchClosedByUser(driver, closedByUserWatchPeriod)
   activeRecord?.recorder.close()
   sender.send('record-stopped')
