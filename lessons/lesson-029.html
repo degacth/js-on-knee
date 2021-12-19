@@ -1,5 +1,9 @@
 <body></body>
 Letters left to pick up: <strong id="lettersCounter"></strong>
+<div style="position: relative">
+  <strong id="expectedWord" style="position: absolute; z-index: 0; color: #ccc"></strong>
+  <strong id="resultWord" style="position: relative; z-index: 10;"></strong>
+</div>
 
 <script>
   const word = prompt('Enter your word')
@@ -10,6 +14,7 @@ Letters left to pick up: <strong id="lettersCounter"></strong>
   let result = ''
 
   lettersCounter.textContent = word.length
+  expectedWord.textContent = word
   
   for (let letter of word) {
     let button = document.createElement('button')
@@ -28,7 +33,8 @@ Letters left to pick up: <strong id="lettersCounter"></strong>
       if (!isCorrectLetter) return alert("Nope! That's wrong letter!")
 
       result += nextWordLetter
-      button.style.position = 'static'
+      document.body.removeChild(button)
+      resultWord.textContent = result
       lettersCounter.textContent = word.length - result.length
 
       if (word === result) alert("Alright, I think you've got them all")
