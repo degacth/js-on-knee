@@ -1,38 +1,48 @@
 <body></body>
+Letters left to pick up: <strong id="lettersCounter"></strong>
 
 <script>
-    let word = prompt('Введите текст')
-    let maxWidth = window.innerWidth - 100
-    let maxHeight = window.innerHeight - 100
-    let startPosition = 0
+  const word = prompt('Enter your word')
+  if (!word.length) alert('Enter a none-empty word') || location.reload()
 
-    for (let i = 0; i < word.length; i++) {
-        let letter = word[i]
-        let button = document.createElement('button')
-        button.textContent = letter
+  const maxWidth = window.innerWidth - 100
+  const maxHeight = window.innerHeight - 100
+  let result = ''
 
-        button.style.position = 'fixed'
-        button.style.left = Math.random() * maxWidth + 'px'
-        button.style.top = Math.random() * maxHeight + 'px'
+  lettersCounter.textContent = word.length
+  
+  for (let letter of word) {
+    let button = document.createElement('button')
+    button.textContent = letter
 
-        function onButtonClick() {
-            if (startPosition == i) {
-                startPosition++
-                button.style.position = 'static'
+    button.style.position = 'fixed'
+    button.style.top = Math.random() * maxHeight + 'px'
+    button.style.left = Math.random() * maxWidth + 'px'
 
-                if (startPosition == word.length) {
-                    alert('Победа')
-                    button.onclick = null
-                }
-                else {
-                }
-            }
-            else {
-                alert('Не верно')
-            }
-        }
+    button.onclick = () => {
+      const isGameFinished = result === word
+      if (isGameFinished) return
 
-        button.onclick = onButtonClick
-        document.body.appendChild(button)
+      const nextWordLetter = word[result.length]
+      const isCorrectLetter = nextWordLetter === letter
+      if (!isCorrectLetter) return alert("Nope! That's wrong letter!")
+
+      result += nextWordLetter
+      button.style.position = 'static'
+      lettersCounter.textContent = word.length - result.length
+
+      if (word === result) alert("Alright, I think you've got them all")
     }
+
+    document.body.appendChild(button)
+  }
+
+  const singleLetterMessage = 'Oops! I droped your letter. Pick it up please.'
+  const multipleLettersMessage = 'Oops! Looks like i droped your letters. You need to pick it up. In the right order'
+  const messages = {
+    true: singleLetterMessage,
+    false: multipleLettersMessage,
+  }
+
+  alert(messages[word.length === 1])
 </script>
