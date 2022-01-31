@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Урок 069 - Двоичная система исчисления</title>
+  <link rel="stylesheet" href="uikit.min.css">
+</head>
+
+<body class="uk-container uk-margin-top">
+  <h1>Двоичная система исчисления - есть сигнал / нет сигнала</h1>
+  <ul class="uk-list uk-list-bullet">
+    <li>Системы счисления
+      <ul>
+        <li>Позиционные</li>
+        <li>Непозиционные</li>
+        <li>Смешанные</li>
+      </ul>
+    </li>
+    <li>0 / 1
+      <ul>
+        <li>Резистор: заряжен / разряжен</li>
+        <li>Дорожки компакт диска: есть углубление / нет углубления </li>
+      </ul>
+    </li>
+    <li>Что такое 64, 128, 256, 512? ... это круглые числа</li>
+  </ul>
+
+  <div id="app">
+    <table class="uk-table uk-table-small uk-table-striped">
+      <thead>
+        <tr>
+          <th>10 (dec)</th>
+          <th>2 (bin)</th>
+          <th>16 (hex)</th>
+          <th>8 (oct)</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr v-for="i in 256" :class="numberClass(i)">
+          <td>{{ i }}</td>
+          <td>{{ toBin(i) }}</td>
+          <td>{{ toHex(i) }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script src="vue.js"></script>
+  <script>
+    Vue.createApp({
+      methods: {
+        toBin(n) {
+          return n.toString(2)
+        },
+        toHex(n) {
+          return n.toString(16)
+        },
+        isPowerOf2(n) {
+          const log2 = Math.log10(n) / Math.log10(2)
+          return Math.ceil(log2) === Math.floor(log2)
+        },
+        numberClass(n) {
+          const isHighlighted = this.isPowerOf2(n)
+          return {
+            'uk-text-success': isHighlighted,
+            'uk-text-large': isHighlighted,
+          }
+        }
+      }
+    }).mount('#app')
+  </script>
+</body>
+
+</html>
