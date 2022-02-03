@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Побитовые сдвиги</title>
+  <link rel="stylesheet" href="uikit.min.css">
+</head>
+
+<body class="uk-container uk-margin-top">
+  <h1>Двигаем биты</h1>
+  <ul class="uk-list uk-list-bullet">
+    <li><code>a &lt;&lt; n</code> сдвигает `a` влево на `n` при этом увеличивает число (до момента переполнения)</li>
+    <li><code>a &gt;&gt; n</code> сдвигает `a` вправо на `n` при этом уменьшает число (до нуля)</li>
+    <li>
+      <code>a &gt;&gt;&gt; n</code> сдвигает `a` вправо на `n с нулевым заполнением
+      <div class="uk-text-meta">https://stackoverflow.com/questions/19077902/bitwise-operation-zero-fill-right-shift-usages/20054337</div>
+    </li>
+  </ul>
+  <hr>
+
+  <div id="app" class="uk-flex">
+    <div>
+      <input type="number" min="1" max="8" v-model="moveRightPosition" class="uk-input uk-form-width-xsmall uk-form-small">
+      <button @click="moveRight" class="uk-margin-right uk-button uk-button-danger uk-button-small">
+        &gt;&gt;
+      </button>
+    </div>
+
+    <div class="uk-inline">
+      <div class="uk-flex uk-flex-row-reverse">
+        <div v-for="(_, bit) in byteSize * 2">
+          <input type="checkbox" class="uk-checkbox" @change="setResultBit(bit, $event.target.checked)"
+            :checked="hasBitInResult(bit)" />
+        </div>
+      </div>
+      <div class="uk-text-right">{{ resultNumber }}</div>
+    </div>
+
+    <div>
+      <button @click="moveLeft" class="uk-margin-left uk-button uk-button-primary uk-button-small">
+        &lt;&lt;
+      </button>
+      <input type="number" min="1" max="8" v-model="moveLeftPosition"
+        class="uk-input uk-form-width-xsmall uk-form-small">
+    </div>
+  </div>
+
+  <script src="vue.js"></script>
+  <script>
+    Vue.createApp({
+      data() {
+        return {
+          byteSize: 8,
+          moveLeftPosition: 1,
+          moveRightPosition: 1,
+          resultNumber: 0,
+        }
+      },
+      methods: {
+        hasBitInResult(bit) {
+          return this.resultNumber & 2 ** bit
+        },
+        setResultBit(bit, isChecked) {
+          const bitPosition = 2 ** bit
+          if (isChecked) this.resultNumber = this.resultNumber | bitPosition
+          else this.resultNumber = this.resultNumber - bitPosition
+        },
+        moveRight() {
+          this.resultNumber = this.resultNumber >> this.moveRightPosition
+        },
+        moveLeft() {
+          this.resultNumber = this.resultNumber << this.moveLeftPosition
+        }
+      }
+    }).mount('#app')
+  </script>
+</body>
+
+</html>
