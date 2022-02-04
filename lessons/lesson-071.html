@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Логические побитовые операции</title>
+  <link rel="stylesheet" href="uikit.min.css">
+</head>
+
+<body class="uk-container uk-margin-top">
+  <h1>Сравниваем биты</h1>
+  <ul>
+    <li><code>a & b</code> возращает 1 только если оба равны 1</li>
+    <li><code>a | b</code> возращает 1 если хотя бы один из операндов равен 1</li>
+    <li><code>a ^ b</code> возращает 1 если операнды имеют разные значения</li>
+    <li><code>~a</code> меняет биты в числе на противоположные</li>
+  </ul>
+  <hr>
+
+  <div id="app" class="uk-flex">
+    <div class="uk-margin-right">
+      <select v-model="bitOperation" class="uk-select uk-form-width-xsmall uk-form-small">
+        <option> & </option>
+        <option> | </option>
+        <option> ^ </option>
+      </select>
+    </div>
+    <div class="uk-inline">
+      <div><bits :len="16" v-model="a" /></div>
+      <div><bits :len="16" v-model="b" /></div>
+      <hr class="uk-margin-small">
+      <div><bits :len="16" :locked="true" :model-value="result" /></div>
+      <div class="uk-text-meta"> <code>{{a}} {{bitOperation}} {{b}} = {{result}} </code></div>
+    </div>
+  </div>
+
+  <template id="bitsTpl">
+    <div class="uk-flex-inline uk-flex-row-reverse">
+      <div v-for="(_, bit) in len">
+        <input type="checkbox"
+               :disabled="locked"
+               :checked="hasBitInNumber(bit)"
+               @change="updateModel(bit, $event.target.checked)"
+               class="uk-checkbox" />
+      </div>
+    </div>
+  </template>
+
+  <script src="vue.js"></script>
+  <script>
+    const bits = {
+      template: bitsTpl,
+      props: ['len', 'locked', 'modelValue'],
+      methods: {
+        hasBitInNumber(bit) {
+          return this.modelValue & 2 ** bit
+        },
+        updateModel(bit, isChecked) {
+          const bitPosition = 2 ** bit
+          const result = isChecked ? (this.modelValue | bitPosition) : this.modelValue - bitPosition
+          this.$emit('update:modelValue', result)
+        }
+      }
+    }
+
+    const bitOperations = {
+      '&': (a, b) => a & b, // function(a, b) { return a & b }
+      '|': (a, b) => a | b,
+      '^': () => null,
+    }
+
+    Vue.createApp({
+      data() {
+        return {
+          a: 0,
+          b: 0,
+          bitOperation: '&'
+        }
+      },
+      computed: {
+        result() {
+          return bitOperations[this.bitOperation](this.a, this.b)
+        }
+      },
+      components: {
+        bits, // bits: bits,
+      }
+    })
+    .mount('#app')
+  </script>
+</body>
+
+</html>
