@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Фильтр изображения</title>
+  <link rel="stylesheet" href="uikit.min.css">
+</head>
+
+<body class="uk-container uk-margin-top">
+  <div id="app">
+    <label>
+      <span class="uk-button uk-button-default">...</span>
+      <input type="file" @change="read($event.target.files[0])"
+             class="uk-hidden" accept=".png,.gif,.jpg,.jpeg" />
+    </label>
+    <span class="uk-text-danger uk-text-uppercase uk-text-bold uk-margin-left">
+      {{ error }}
+    </span>
+    <span v-if="!error">
+      <label class="uk-margin-small-right" v-for="(value, flag) in flags">
+        {{ flag }}
+        <input type="checkbox" v-model="flags[flag].selected"
+               class="uk-checkbox" @change="updateImage" />
+      </label>
+    </span>
+    <div class="uk-margin-top">
+      <canvas ref="canvas"></canvas>
+    </div>
+  </div>
+
+  <script src="vue.js"></script>
+  <script>
+    const powOf2Gen = function* (i) {
+      while (true) yield 1 << i++
+    }
+
+    const flagsGen = powOf2Gen(0)
+    const bytesForPixel = 4
+    // function colorFilter(colorIndex) {
+    //   return function(isSelected) {
+    //     return function(data, i) {
+    //       if (!isSelected) data[i + colorIndex] = 0
+    //     }
+    //   }
+    // }
+    const colorFilter = (colorIndex) => (isSelected) => (data, i) => {
+      if (!isSelected) data[i + colorIndex] = 0
+    }
+
+    const redPos = 0
+    const greenPos = 1
+    const bluePos = 2
+
+    const flags = {
+      R: {
+        value: flagsGen.next().value,
+        selected: true,
+        handler: colorFilter(redPos)
+      },
+
+      G: {
+        value: flagsGen.next().value,
+        selected: true,
+        handler: colorFilter(greenPos)
+      },
+
+      B: {
+        value: flagsGen.next().value,
+        selected: true,
+        handler: colorFilter(bluePos)
+      },
+
+      GRAYSCALE: {
+        value: flagsGen.next().value,
+        selected: false,
+        handler: (isSelected) => (data, i) => {
+          if (!isSelected) return
+          const r = data[i]
+          const g = data[i + 1]
+          const b = data[i + 2]
+
+          const color = (r + g + b) / 3
+          for (let j = 0; j < bytesForPixel - 1; j++) {
+            data[i + j] = color
+          }
+        }
+      }
+    }
+
+    Vue.createApp({
+      data() {
+        const image = new Image
+        image.onload = this.updateImage
+
+        return {
+          image,
+          flags,
+          error: null,
+        }
+      },
+      methods: {
+        read(file) {
+          this.error = null
+          const isImage = file.type.startsWith('image/')
+          if (!isImage) return this.error = 'File is not an image'
+
+          this.image.src = URL.createObjectURL(file)
+        },
+        updateImage() {
+          const {canvas} = this.$refs // const canvas = this.$refs.canvas
+          const {width, height} = this.image
+          if (!width || !height) return
+
+          canvas.width = width
+          canvas.height = height
+          const ctx = canvas.getContext('2d')
+          ctx.drawImage(this.image, 0, 0)
+
+          const data = this.filterImageData(
+            ctx.getImageData(0, 0, width, height)
+          )
+          ctx.putImageData(data, 0, 0)
+        },
+        filterImageData(data) {
+          let combinedFlags = 0
+          for (const key in this.flags) {
+            const flag = this.flags[key]
+            // combinedFlags = combinedFlags | (flag.selected * flag.value)
+            combinedFlags |= (flag.selected * flag.value)
+          }
+
+          const filters = Object.values(this.flags)
+            .map(({value, handler}) => handler(combinedFlags & value))
+
+          for (let i = 0; i < data.data.length; i += bytesForPixel) {
+            for (let n = 0; n < filters.length; n++) {
+              filters[n](data.data, i)
+            }
+          }
+
+          return data
+        }
+      }
+    }).mount('#app')
+  </script>
+</body>
+
+</html>
