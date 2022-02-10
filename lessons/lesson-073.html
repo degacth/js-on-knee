@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Булевая математика</title>
+  <link rel="stylesheet" href="uikit.min.css">
+</head>
+
+<body class="uk-container uk-margin-top">
+  <h1>Немного дискретной математики</h1>
+  <ul class="uk-list">
+    <li>
+      <code>if (user && user.isAuthorized() || !user.inBanList() && user.isGodModeEnabled() ) { user.photos.showNaked() }</code>
+    </li>
+    <li><code>&&</code> === *</li>
+    <li><code>||</code> === +</li>
+    <li>
+      Законы де Моргана
+      <ul>
+        <li><code>!a && !b === !(a || b)</code></li>
+        <li><code>!a || !b === !(a && b)</code></li>
+      </ul>
+    </li>
+  </ul>
+  <hr>
+
+  <div id="app">
+    <div class="uk-flex">
+      <div v-for="element in expression">
+        <button class="uk-button uk-button-default uk-button-small" style="font-family: monospace"
+          :class="element.klass()" @click="click(element)">
+
+          {{ element.name }}
+        </button>
+        <div class="uk-text-center uk-margin-top">{{ element.asMath() }}</div>
+      </div>
+
+      <div class="uk-text-center uk-margin-left">
+        <code>{{ result }}</code>
+      </div>
+    </div>
+  </div>
+
+  <script src="vue.js"></script>
+  <script>
+    const notImplemented = new Error('not implemented')
+
+    class ExpressionElement {
+      constructor(name) {
+        this.name = name
+      }
+
+      klass() { throw notImplemented }
+      asMath() { throw notImplemented }
+      asJs() { throw notImplemented }
+      handleClick() { throw notImplemented }
+    }
+
+    class Operand extends ExpressionElement {
+      value = false
+      klass() {
+        return {
+          'uk-button-primary': this.value
+        }
+      }
+
+      asMath() {
+        return +this.value
+      }
+
+      asJs() {
+        return this.value
+      }
+
+      handleClick() {
+        this.value = !this.value
+      }
+    }
+
+    class Operator extends ExpressionElement {
+      operators = {
+        '&&': '*',
+        '||': '+',
+      }
+
+      klass() {
+        return {
+          'uk-button-secondary': true,
+        }
+      }
+
+      asMath() {
+        return this.operators[this.name]
+      }
+
+      asJs() {
+        return this.name
+      }
+
+      handleClick() {
+        const operatorNames = Object.keys(this.operators)
+        const nextOperatorIndex = operatorNames.findIndex(o => o === this.name) + 1
+        this.name = operatorNames[nextOperatorIndex % operatorNames.length]
+      }
+    }
+
+    Vue.createApp({
+      data() {
+        return {
+          expression: 'a && b && c || d'.split(' ').map(this.createExpressionElement)
+        }
+      },
+      methods: {
+        createExpressionElement(value) {
+          if (value.match(/[a-z]/)) return new Operand(value)
+          return new Operator(value)
+        },
+        click(element) {
+          element.handleClick()
+          this.expression = [... this.expression]
+        }
+      },
+      computed: {
+        result() {
+          return eval(this.expression.map(exp => exp.asJs()).join(' '))
+        }
+      }
+    }).mount('#app')
+  </script>
+</body>
+
+</html>
