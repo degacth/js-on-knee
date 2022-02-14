@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Числа и множества</title>
+  <link rel="stylesheet" href="uikit.min.css">
+</head>
+
+<body class="uk-container uk-margin-top">
+  <div id="app">
+    <div class="uk-flex uk-flex-between">
+      <div v-for="set in sets" class="uk-flex uk-flex-column uk-text-center">
+        <label class="uk-margin">
+          <input type="checkbox" class="uk-checkbox" v-model="set.selected"
+                 @change="combineSets">
+
+          {{set.title}}
+        </label>
+
+        <number-set :numbers="set.nums" :bounds="boundsOfSet" />
+      </div>
+    </div>
+
+    <div class="uk-flex uk-flex-center uk-margin">
+      <div class="uk-button-group">
+        <button class="uk-button uk-button-default"
+                :class="isActiveOperationButton(union)"
+                @click="updateOperation(union)">
+
+          Объединение
+        </button>
+
+        <button class="uk-button uk-button-default"
+                :class="isActiveOperationButton(intersection)"
+                @click="updateOperation(intersection)">
+
+          Пересечение
+        </button>
+      </div>
+    </div>
+
+    <div class="uk-flex uk-flex-center">
+      <number-set :numbers="resultSet.nums" :bounds="boundsOfSet" />
+    </div>
+  </div>
+
+  <template id="numberSetTpl">
+    <div class="uk-position-relative uk-border-circle uk-card uk-card-default"
+         :style="containerStyles()">
+
+      <div v-for="n in numbers" class="uk-position-absolute uk-label"
+           :style="numberStyles()">
+
+        {{ n }}
+      </div>
+    </div>
+  </template>
+
+  <script src="vue.js"></script>
+  <script>
+    const naturalGenerator = function* (max) {
+      let i = 1
+      while (i <= max) {
+        yield i++
+      }
+    }
+
+    const fibGenerator = function* (max) {
+      let prev = 0
+      let current = 1
+      yield current
+
+      while (max--) {
+        [prev, current] = [current, prev + current]
+        yield current
+      }
+    }
+
+    const isPrime = n => !'1'.repeat(n).match(/^1?$|^(11+?)\1+$/)
+    const primeGenerator = function* (max) {
+      let i = 1
+      while (max) {
+        if (!isPrime(++i)) continue
+        max--
+        yield i
+      }
+    }
+
+    const union = (set1, set2) => new Set([...set1], [...set2])
+    const intersection = (set1, set2) => new Set([...set1].filter(item => set2.has(item)))
+
+    const numberSet = {
+      template: numberSetTpl,
+      props: ['numbers', 'bounds'],
+      methods: {
+        rand(max) {
+          return parseInt(Math.random() * max)
+        },
+        randInCircle(radius) {
+          const diameter = radius * 2
+          const [x, y] = [this.rand(diameter), this.rand(diameter)]
+          const isInCircle = (x - radius) ** 2 + (y - radius) ** 2 <= radius ** 2
+          if (isInCircle) return [x, y]
+
+          return this.randInCircle(radius)
+        },
+        containerStyles() {
+          return {
+            width: this.bounds.width + 'px',
+            height: this.bounds.height + 'px',
+          }
+        },
+        numberStyles() {
+          const radius = this.bounds.width / 2
+          const positions = this.randInCircle(radius).map(p => p + 'px')
+          const [top, left] = positions
+          return {top, left}
+        }
+      }
+    }
+
+    Vue.createApp({
+      data() {
+        return {
+          sets: [
+            {
+              nums: new Set(naturalGenerator(100)),
+              title: 'Натуральные числа',
+              selected: false,
+            },
+            {
+              nums: new Set(primeGenerator(50)),
+              title: 'Простые числа',
+              selected: false,
+            },
+            {
+              nums: new Set(fibGenerator(20)),
+              title: 'Числа Фибоначчи',
+              selected: false,
+            },
+          ],
+          resultSet: {
+            nums: new Set(),
+          },
+          boundsOfSet: {
+            width: 320,
+            height: 320,
+          },
+          selectedSetOperation: null,
+          union,
+          intersection,
+        }
+      },
+      methods: {
+        isActiveOperationButton(operation) {
+          return {
+            'uk-button-primary': operation === this.selectedSetOperation
+          }
+        },
+        updateOperation(func) {
+          this.selectedSetOperation = func
+          this.combineSets()
+        },
+        combineSets() {
+          if (!this.selectedSetOperation) return
+
+          const selectedSets = this.sets.filter(s => s.selected)
+          if (!selectedSets.length) return this.resultSet.nums = new Set()
+
+          this.resultSet.nums = selectedSets
+            .map(s => s.nums)
+            .reduce(this.selectedSetOperation)
+        }
+      },
+      components: {
+        numberSet,
+      }
+    }).mount('#app')
+  </script>
+</body>
+
+</html>
