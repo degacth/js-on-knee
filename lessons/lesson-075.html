@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Распределение по окружности</title>
+  <link rel="stylesheet" href="uikit.min.css">
+  <style>
+    .circle {
+      transition: all ease .3s;
+      transform: translate(-50%, -50%);
+      font-size: 75%;
+    }
+  </style>
+</head>
+
+<body class="uk-container uk-margin-top">
+  <h1>Тригонометри́ческие фу́нкции</h1>
+  <div class="uk-flex">
+    <div class="uk-width-1-2">
+      <ul class="uk-list">
+        <li><code>Math.PI === 3.141592653589793</code> (180 градусов)</li>
+        <li>
+          <code>Math.sin(α) === ab / ob</code>
+          <div class="uk-text-meta">
+            синусом угла α называется отношение противолежащего катета к гипотенузе
+          </div>
+        </li>
+        <li>
+          <code>Math.cos(α) === oa / ob</code>
+          <div class="uk-text-meta">
+            косинусом угла α называется отношение прилежащего катета к гипотенузе
+          </div>
+        </li>
+        <li>
+          <code>Math.tan(α) === ab / oa</code>
+          <div class="uk-text-meta">
+            тангенсом угла α называется отношение противолежащего катета к прилежащему
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="uk-width-1-2"><img src="trg.svg" /></div>
+  </div>
+
+  <div id="app">
+    <input type="range" class="uk-range uk-margin-large-bottom"
+           min="1" max="24" v-model="count">
+
+    <div class="uk-card uk-card-default uk-position-relative uk-border-circle"
+         :style="containerStyles()">
+
+      <div v-for="(n, index) in +count" :style="circleStyles(index)"
+        class="circle uk-card uk-card-secondary uk-position-absolute uk-border-circle">
+
+        <div class="uk-flex uk-flex-center uk-flex-middle uk-width-1-1 uk-height-1-1">
+          {{ n }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="vue.js"></script>
+  <script>
+    const toPx = n => n + 'px'
+
+    Vue.createApp({
+      data() {
+        return {
+          size: 300,
+          count: 4,
+          deg360: Math.PI * 2,
+        }
+      },
+      methods: {
+        sizeToSquare(size) {
+          return {
+            width: toPx(size),
+            height: toPx(size),
+          }
+        },
+        containerStyles() {
+          return this.sizeToSquare(this.size)
+        },
+        circleStyles(n) {
+          const size = this.size / this.count
+          const radius = this.size / 2
+          const angle = (this.deg360 / this.count) * n
+          const top = toPx(Math.sin(angle) * radius + radius)
+          const left = toPx(Math.cos(angle) * radius + radius)
+
+          return {top, left, ... this.sizeToSquare(size)}
+        }
+      }
+    }).mount('#app')
+  </script>
+</body>
+
+</html>
