@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Парадокс Монти Холла</title>
+  <link rel="stylesheet" href="uikit.min.css">
+
+  <style>
+    #app {
+      height: 100vh;
+    }
+
+    .door-frame {
+      width: 30%;
+      height: 50%;
+      border: 10px solid #2A2C2B;
+      border-radius: 10px;
+      perspective: 600px;
+      background-color: #374140;
+      transition: all ease .3s;
+    }
+
+    .door-frame.selected {
+      box-shadow: 0 0 24px #DC3522;
+    }
+
+    .door {
+      width: 100%;
+      height: 100%;
+      transition-property: transform;
+      transform-style: preserve-3d;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .door.is-flipped {
+      transform: rotateY(180deg);
+    }
+
+    .door-side {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      color: #D9CB9E;
+      backface-visibility: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 10vh;
+    }
+
+    .closed {
+      background: #DC3522;
+    }
+
+    .opened {
+      background: #D9CB9E;
+      transform: rotateY(180deg);
+    }
+  </style>
+</head>
+
+<body class="uk-container uk-container-small">
+  <div id="app" class="uk-flex uk-flex-column">
+    <div class="uk-text-center uk-text-lead uk-margin-top">
+      Wins 👑 : {{ wins }} / {{ games }} ({{ percentage() }}%)
+    </div>
+    <div class="doors uk-flex uk-flex-between uk-height-1-1 uk-width-1-1 uk-flex-middle">
+      <div class="door-frame"
+           :class="{selected: door.selected}"
+           v-for="door in doors" @click="openDoor(door)">
+
+        <div class="door" :class="{'is-flipped': door.opened}" :style="doorStyles()">
+          <div class="door-side closed"> ❓ </div>
+          <div class="door-side opened">{{ door.value }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="vue.js"></script>
+  <script>
+    const goat = '🐐'
+    const money = '💰'
+    const rand = max => Math.floor(Math.random() * max)
+    const sleep = time => new Promise(res => setTimeout(res, time))
+
+    const shuffle = array => array
+      .map(value => ({value, sort: Math.random()}))
+      .sort((a, b) => a.sort - b.sort)
+      .map(({value}) => value)
+
+    Vue.createApp({
+      data() {
+        const doorAnimationTime = 1000
+
+        return {
+          doorAnimationTime,
+          doors: [],
+          openHandler: null,
+          wins: 0,
+          games: 0,
+        }
+      },
+
+      created() {
+        this.prepareGame()
+      },
+
+      methods: {
+        async prepareGame() {
+          if (this.doors.length) await this.closeDoors()
+
+          const maxDoors = 3
+          const doors = new Array(maxDoors).fill(goat)
+          doors[rand(maxDoors)] = money
+          this.doors = doors.map(value => ({value}))
+          this.openHandler = this.firstChoiceHandler
+        },
+        
+        closeDoors() {
+          this.doors.forEach(d => d.opened = false)
+          this.doors = [... this.doors]
+          return sleep(this.doorAnimationTime)
+        },
+
+        openDoor(door) {
+          this.openHandler?.(door)
+        },
+
+        firstChoiceHandler(door) {
+          door.selected = true
+          this.showWrongDoor()
+          this.openHandler = this.secondChoiceHandler
+        },
+
+        showWrongDoor() {
+          const doorsNotSelectedWithGoat = this.doors.filter(d => !d.selected && d.value !== money)
+          doorsNotSelectedWithGoat[rand(doorsNotSelectedWithGoat.length)].opened = true
+        },
+
+        async secondChoiceHandler(door) {
+          if (door.opened) return
+
+          door.opened = true
+          this.openHandler = null
+          this.updateGameResults(door)
+
+          await sleep(2000)
+          this.prepareGame()
+        },
+
+        updateGameResults(selectedDoor) {
+          this.games++
+          if (selectedDoor.value === money) this.wins++
+        },
+
+        doorStyles() {
+          return { transitionDuration: this.doorAnimationTime + 'ms' }
+        },
+
+        percentage() {
+          return '??'
+        }
+      }
+    }).mount('#app')
+  </script>
+</body>
+
+</html>
