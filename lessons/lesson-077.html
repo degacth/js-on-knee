@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Экспонента e</title>
+  <link rel="stylesheet" href="uikit.min.css">
+</head>
+
+<body class="uk-container uk-margin-top">
+  <p class="uk-dropcap uk-logo">Банк экспоненциального развития</p>
+  <div class="uk-label">e ≈ 2 . 718 281 828 459</div>
+  <hr>
+
+  <div id="app">
+    <form class="uk-form-horizontal uk-margin-large">
+      <div class="uk-margin">
+        <label class="uk-form-label" for="money">Сумма вклада</label>
+        <div class="uk-form-controls">
+          <input class="uk-input" id="money" type="number" v-model="money">
+        </div>
+      </div>
+
+      <div class="uk-margin">
+        <label class="uk-form-label" for="payments">Количество выплат</label>
+        <div class="uk-form-controls">
+          <input class="uk-input uk-width-1-2" id="payments" type="number" v-model="payments" min="1">
+          <input class="uk-input uk-width-1-2" disabled type="text" :value="formater.format(percent) + ' %'">
+        </div>
+      </div>
+
+      <div class="uk-margin uk-text-bold">
+        <label class="uk-form-label">Годовой доход</label>
+        <div class="uk-form-controls">{{ showNumber(annualIncome) }} ₽</div>
+      </div>
+    </form>
+  </div>
+
+  <script src="vue.js"></script>
+  <script>
+    Vue.createApp({
+      data() {
+        return {
+          money: 1_000_000,
+          payments: 1,
+          maxPercent: 100,
+          formater: new Intl.NumberFormat(),
+        }
+      },
+      methods: {
+        showNumber(n) {
+          return this.formater.format(n)
+        }
+      },
+      computed: {
+        percent() {
+          return this.maxPercent / this.payments
+        },
+        annualIncome() {
+          let payments = +this.payments
+          if (payments < 1) return
+
+          const percent = this.percent * 0.01
+          let result = +this.money
+          while (payments--) result += result * percent
+          return result
+        }
+      }
+    }).mount('#app')
+  </script>
+</body>
+
+</html>
