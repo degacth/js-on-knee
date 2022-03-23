@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="uikit.min.css">
+  <title>Математика 1 класс</title>
+
+  <style>
+    .points-group {
+      width: 100%;
+      height: 60px;
+      position: relative;
+    }
+
+    .point-circle {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+    }
+
+    .point-circle.is-editable {
+      cursor: pointer;
+    }
+
+    .point {
+      position: absolute;
+      transition: all ease .3s;
+      box-shadow: 0 6px 6px #ccc;
+    }
+
+    .cell {
+      border: 2px solid #FFC142;
+    }
+
+    .color-selector {
+      margin: 10px;
+      cursor: pointer;
+    }
+
+    .win-overlay {
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      right: -6px;
+      bottom: -6px;
+      background-color: rgba(0, 0, 0, .3);
+      opacity: .8;
+      border-radius: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 120px;
+    }
+  </style>
+</head>
+
+<body class="uk-container uk-margin-top">
+  <div class="uk-text-meta">Математика. Рабочая тетрать. 1 класс</div>
+  <h3 class="uk-margin-remove-top">Задача 5 (стр 53)</h3>
+  <p class="uk-width-1-2">
+    Определи правило, по которому заполнены клетки в таблице слева.
+    Заполни по этому правилу все свободные клетки в двух таблицах.
+  </p>
+
+  <div id="app">
+    <div class="uk-flex" @mousemove="updateCurcorCircle">
+      <div v-for="table in tables" class="uk-width-1-2 uk-margin-right uk-position-relative">
+        <math-for-child :colors="table.colors"
+                        :selected-color="selectedOfColors(table.colors)"
+                        @update-color="selectedColor = $event"
+                        @update-cell="updateTables($event)"
+                        :table="table.data"></math-for-child>
+      </div>
+    </div>
+
+    <div class="point-circle uk-position-fixed"
+         ref="cursorPoint"
+         :style="{background: selectedColor}"></div>
+  </div>
+
+  <template id="mathForChildTpl">
+    <table class="uk-table uk-width-1-1">
+      <tr v-for="(row, i) in table">
+        <td v-for="(cell, j) in row" class="cell">
+          <cell-item :item="cell"
+                     :selected-color="selectedColor"
+                     @add-point="addPoint(i, j, $event)"
+                     @remove-point="removePoint(i, j, $event)"></cell-item>
+        </td>
+      </tr>
+    </table>
+
+    <div class="uk-text-center">
+      <span v-for="color in colors"
+            class="point-circle color-selector uk-box-shadow-hover-small"
+            @click="$emit('update-color', color)"
+            :style="{background: color}"></span>
+    </div>
+
+    <div class="win-overlay uk-animation-shake" v-if="done">&#128077;</div>
+  </template>
+
+  <template id="cellItemTpl">
+    <div class="points-group" @click="handleClick($event)">
+      <span class="point point-circle uk-transform-center"
+            :class="{'is-editable': isEditable}"
+            v-for="(point, index) in points" :style="styles(index + 1, point)">
+      </span>
+    </div>
+  </template>
+
+  <script src="vue.js"></script>
+  <script>
+    const red = '#E83938'
+    const green = '#8BE836'
+    const blue = '#5793FF'
+
+    const chunk = (arr, size) => arr.reduce((acc, item, index) => {
+      const ch = Math.floor(index / size);
+      acc[ch] = [].concat((acc[ch] || []), item);
+      return acc
+    }, [])
+
+    const cell = (...args) => {
+      if (args.length % 2) throw new Error('There must be an even number of elements')
+      return Object.fromEntries(chunk(args, 2))
+    }
+
+    const pointsToList = points => Object
+      .entries(points)
+      .reduce((acc, [key, size]) => [... acc, ... new Array(size).fill(key)], [])
+    
+    const addCells = (cell1, cell2) => [... Object.entries(cell1), ... Object.entries(cell2)]
+      .reduce((acc, [k, v]) => {
+        acc[k] = (acc[k] || 0) + v
+        return acc
+      }, {})
+    
+    const numberOrZero = v => v || 0
+    const compareCells = (cell1, cell2) => Object.keys({... cell1, ... cell2})
+      .every(key => numberOrZero(cell1[key]) === numberOrZero(cell2[key]))
+
+    const validateTable = table => {
+      const noneUsed = Object.values(table[0][0]).reduce((a, b) => a + b, 0) 
+      if (noneUsed) return false
+
+      for (let i = 1; i < table.length; i++) {
+        for (let j = 1; j < table[i].length; j++) {
+          const isValid = compareCells(addCells(table[0][j], table[i][0]), table[i][j])
+          if (!isValid) return false
+        }
+      }
+
+      return true
+    }
+
+    const isEquals = (a, b) => JSON.stringify(a) === JSON.stringify(b)
+    const assertEquals = (actual, expected) => {
+      if (isEquals(actual, expected)) return
+      console.assert(false, `Test failed: ${JSON.stringify(actual)} !== ${JSON.stringify(expected)}`)
+    }
+
+    assertEquals(chunk([], 3), [])
+    assertEquals(chunk([1, 2, 3, 4, 5, 6, 7], 3), [ [1, 2, 3], [4, 5, 6], [7] ])
+    assertEquals(chunk([1, 2, 3, 4, 5, 6], 3), [ [1, 2, 3], [4, 5, 6] ])
+    assertEquals(chunk([1, 2, 3, 4, 5, 6, 7], 2), [ [1, 2], [3, 4], [5, 6], [7] ])
+
+    assertEquals(cell(), {})
+    assertEquals(cell('hello', 3), {hello: 3})
+    assertEquals(cell('world', 2), {world: 2})
+    assertEquals(cell('foo', 4, 'bar', 5), {foo: 4, bar: 5})
+
+    const [foo, bar] = ['foo', 'bar']
+    assertEquals(pointsToList(cell()), [])
+    assertEquals(pointsToList(cell(foo, 4)), [foo, foo, foo, foo])
+    assertEquals(pointsToList(cell(foo, 3, bar, 2)), [foo, foo, foo, bar, bar])
+
+    assertEquals(
+      addCells(cell(foo, 2), cell(bar, 3)), {foo: 2, bar: 3}
+    )
+    assertEquals(
+      addCells(cell(foo, 3), cell(bar, 1, foo, 4)), {foo: 7, bar: 1}
+    )
+
+    assertEquals(compareCells(cell(foo, 2), cell(foo, 2)), true)
+    assertEquals(compareCells(cell(foo, 2), cell(foo, 1)), false)
+    assertEquals(compareCells(cell(foo, 2, bar, 0), cell(foo, 2)), true)
+
+    assertEquals(validateTable([
+      [cell(), cell(foo, 1), cell(foo, 3)],
+      [cell(bar, 2), cell(bar, 2, foo, 1), cell(bar, 2, foo, 3)],
+      [cell(bar, 4), cell(bar, 4, foo, 1), cell(bar, 4, foo, 3)],
+    ]), true)
+
+    assertEquals(validateTable([
+      [cell(foo, 3), cell(foo, 1), cell(foo, 3)],
+      [cell(bar, 2), cell(bar, 2, foo, 1), cell(bar, 2, foo, 3)],
+      [cell(bar, 4), cell(bar, 4, foo, 1), cell(bar, 4, foo, 3)],
+    ]), false)
+
+    assertEquals(validateTable([
+      [cell(), cell(foo, 1), cell(foo, 3)],
+      [cell(bar, 2), cell(bar, 2, foo, 1), cell(bar, 2, foo, 3)],
+      [cell(bar, 4), cell(bar, 5, foo, 1), cell(bar, 4, foo, 3)],
+    ]), false)
+
+    const cellItem = {
+      template: cellItemTpl,
+      props: ['item', 'selected-color'],
+      data() {
+        return {
+          points: [],
+          isEditable: !pointsToList(this.item).length
+        }
+      },
+      watch: {
+        item: {
+          immediate: true,
+          handler() {
+            this.points = pointsToList(this.item)
+          }
+        }
+      },
+      methods: {
+        styles(index, background) {
+          const count = this.points.length
+          const isLastOdd = index === count && index % 2
+          if (isLastOdd) return {
+            background,
+            left: this.toPercent(50),
+            top: this.toPercent(50),
+          }
+
+          const size = Math.floor(count / 2) + 1
+          const sizeDiff = 100 / size
+          const left = this.toPercent( sizeDiff * (Math.floor((index - 1) / 2) + 1) )
+          const top = this.toPercent(100 * (index % 2))
+
+          return {
+            background,
+            left,
+            top,
+          }
+        },
+        toPercent(n) {
+          return n + '%'
+        },
+        handleClick(event) {
+          if (!this.isEditable || !this.selectedColor) return
+          const {target} = event
+          const action = target.classList.contains('point') ? 'remove' : 'add'
+          this.$emit(`${action}-point`, this.selectedColor)
+        }
+      }
+    }
+
+    const mathForChild = {
+      template: mathForChildTpl,
+      props: ['colors', 'table', 'selected-color'],
+      emits: ['update-color', 'update-cell'],
+      data() {
+        return {
+          done: false,
+        }
+      },
+      methods: {
+        addPoint(i, j, color) {
+          this.updateCellPoint(i, j, color, 1)
+        },
+        removePoint(i, j, color) {
+          this.updateCellPoint(i, j, color, -1)
+        },
+        updateCellPoint(i, j, color, diff) {
+          const cell = this.table[i][j]
+          cell[color] = Math.max(0, (cell[color] || 0) + diff)
+          this.$emit('update-cell', [this.table, cell, i, j])
+          this.done = validateTable(this.table)
+        } 
+      },
+      components: {
+        cellItem,
+      }
+    }
+
+    const tableLeft = [
+      [cell(), cell(green, 3), cell(green, 4), cell(green, 5)],
+      [cell(red, 1), cell(red, 1, green, 3), cell(), cell(red, 1, green, 5)],
+      [cell(red, 2), cell(), cell(red, 2, green, 4), cell()]
+    ]
+
+    const tableRight = [
+      [cell(), cell(blue, 1), cell(), cell()],
+      [cell(blue, 2), cell(), cell(blue, 6), cell()],
+      [cell(blue, 3), cell(), cell(), cell(blue, 8)]
+    ]
+
+    const tables = [
+      {data: tableLeft, colors: [red, green]},
+      {data: tableRight, colors: [blue]},
+    ]
+
+    Vue.createApp({
+      data() {
+        return {
+          red,
+          green,
+          blue,
+          tables,
+          selectedColor: null
+        }
+      },
+      methods: {
+        selectedOfColors(colors) {
+          if (colors.includes(this.selectedColor)) return this.selectedColor
+          return null
+        },
+        updateTables([table, cell, i, j]) {
+          table[i][j] = {... cell}
+          this.tables = [... this.tables]
+        },
+        updateCurcorCircle(event) {
+          const {clientX, clientY} = event
+          const {cursorPoint} = this.$refs
+          cursorPoint.style.top = clientY + 'px'
+          cursorPoint.style.left = clientX + 'px'
+        }
+      },
+      components: {
+        mathForChild,
+      }
+    }).mount('#app')
+  </script>
+</body>
+
+</html>
