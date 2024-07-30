@@ -36,6 +36,11 @@ const createDirectoryHTML = async dirPath => {
 }
 
 const handleRequest = async (request, response) => {
+    if (path.normalize(decodeURIComponent(request.url)) !== decodeURIComponent(request.url)) {
+        response.statusCode = 403;
+        response.end();
+        return;
+    }
   const currentPath = path.join(process.cwd(), decodeURIComponent(request.url))
   if (await isDir(currentPath)) return response.end(await createDirectoryHTML(currentPath))
 
